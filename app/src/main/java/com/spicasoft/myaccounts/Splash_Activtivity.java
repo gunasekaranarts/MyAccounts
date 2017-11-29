@@ -91,6 +91,7 @@ public class Splash_Activtivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
         getSupportActionBar().hide();
+        progressDialog = new ProgressDialog(this);
         PermissionCheckUP();
         mHelper = new MyAccountsDatabase(Splash_Activtivity.this);
         SecurityProfileView();
@@ -436,7 +437,7 @@ public class Splash_Activtivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(Splash_Activtivity.this);
+
             progressDialog.setMessage("Please wait...");
             progressDialog.show();
         }

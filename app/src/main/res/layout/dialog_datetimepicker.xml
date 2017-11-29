@@ -26,6 +26,7 @@
         android:id="@+id/date_picker"
         android:layout_width="match_parent"
         android:calendarViewShown="false"
+        android:headerBackground="@color/addlayout"
         android:spinnersShown="true"
         android:layout_weight="4"
         android:layout_height="0dp" />
@@ -42,20 +43,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/button_press"
+            android:background="@color/light_gray"
             android:paddingLeft="4dp"
             android:text="OK"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/setdatetime_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/button_press"
+            android:background="@color/light_gray"
             android:paddingLeft="4dp"
             android:text="Cancel"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/black" />
 
     </LinearLayout>
 </LinearLayout>

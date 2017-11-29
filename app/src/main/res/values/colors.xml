@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#276D05</color><!--#24215A--><!--#0000EE-->
-    <color name="colorPrimaryDark">#348d08</color>
+    <color name="colorPrimary">#1B4D3E</color><!--#24215A--><!--#0000EE-->
+    <color name="colorPrimaryDark">#003C1F</color>
     <color name="colorAccent">#FFFFFF</color>
     <color name="colorAccent2">#24215A</color>
     <color name="black">#000</color>
@@ -37,7 +37,7 @@
 
     <color name="progressback">#E4E4E4</color>
     <color name="pink">#FF4081</color>
-
+    <color name="light_gray">#F5F5F5</color>
     <color name="tabcolour">#636363</color>
 
     <!--nandhini-->
