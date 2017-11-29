@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_margin="5dp"
+     >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <CustomWidget.TextAwesome
+            android:id="@+id/imageTransaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/txt_TransactionDesc"
+            android:layout_gravity="center"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/fa_upload"
+            android:textColor="@color/red"
+            android:textSize="26dp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/txt_narration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="11dp"
+            android:layout_toEndOf="@+id/imageTransaction"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/txt_TransactionDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/txt_narration"
+            android:layout_below="@+id/txt_narration"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/txt_Transaction_Amt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:text="TextView" />
+
+        <CustomWidget.TextAwesome
+            android:id="@+id/edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/txt_Transaction_Amt"
+            android:layout_below="@+id/txt_narration"
+            android:layout_gravity="center"
+            android:layout_marginRight="30dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="@string/fa_pencil"
+            android:textColor="@color/black"
+            android:textSize="26dp"
+            android:textStyle="bold" />
+
+        <CustomWidget.TextAwesome
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/txt_Transaction_Amt"
+            android:layout_below="@+id/txt_Transaction_Amt"
+            android:layout_gravity="center"
+            android:layout_marginEnd="1dp"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:text="@string/fa_trash"
+            android:textColor="@color/black"
+            android:textSize="26dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</LinearLayout>

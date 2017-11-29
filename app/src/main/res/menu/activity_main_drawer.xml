@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_daily"
+            android:icon="@drawable/ic_menu_transaction"
+            android:title="Daily" />
+        <item
+            android:id="@+id/nav_statement"
+            android:icon="@drawable/ic_menu_statement"
+            android:title="Statement" />
+        <item
+            android:id="@+id/nav_persons"
+            android:icon="@drawable/ic_menu_person"
+            android:title="Manage Persons" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_menu_profile"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_pwd"
+            android:icon="@drawable/ic_menu_pin"
+            android:title="Change Pin" />
+        <item
+            android:id="@+id/nav_backup"
+            android:icon="@drawable/ic_menu_backup"
+            android:title="Backup / Resore" />
+
+    </group>
+
+
+</menu>
