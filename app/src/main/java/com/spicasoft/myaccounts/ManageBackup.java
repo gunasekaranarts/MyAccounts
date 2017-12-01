@@ -77,8 +77,14 @@ public class ManageBackup extends Fragment {
         btn_off_restore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), FilePicker.class);
-                startActivityForResult(intent, ((MainActivity)getActivity()).REQUEST_PICK_FILE);
+               Intent intent=new Intent();
+                //sets the select file to all types of files
+                intent.setType("file/*");
+                //allows to select data and return it
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                //starts new activity to select file and return data
+                getActivity().startActivityForResult(Intent.createChooser(intent,
+                        "Choose File to Restore.."),((MainActivity)getActivity()).REQUEST_PICK_FILE);
             }
         });
 
@@ -126,8 +132,6 @@ public class ManageBackup extends Fragment {
     public void CreateOfflineBackup() {
         final File currentDB = new File("/data/data/com.spicasoft.myaccounts/databases/MyAccountsDatabase.db");
         if (currentDB.exists()) {
-
-            File data = Environment.getDataDirectory();
             File myDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/My Accounts/");
             if (!myDir.exists()) {
                 myDir.mkdir();
@@ -162,7 +166,26 @@ public class ManageBackup extends Fragment {
     }
     public void restoreOffline(File file)
     {
-        showMessage("Restore Successful at " + file.getAbsolutePath());
+
+        final File myDir = new File("/data/data/com.spicasoft.myaccounts/databases");
+        if(myDir.exists()) {
+            File backupDB = new File(myDir, "MyAccountsDatabase.db");
+
+            FileChannel src = null;
+            FileChannel dst = null;
+            try {
+                src = new FileInputStream(file).getChannel();
+                dst = new FileOutputStream(backupDB).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                src.close();
+                dst.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            showMessage("Restore Successful");
+        }
     }
 
 }

@@ -36,7 +36,6 @@
         <activity android:name=".Password_Activity"
             android:screenOrientation="portrait"
             android:noHistory="true"/>
-        <activity android:name=".FilePicker"></activity>
     </application>
 
 </manifest>

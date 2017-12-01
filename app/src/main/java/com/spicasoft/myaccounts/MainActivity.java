@@ -4,7 +4,9 @@ package com.spicasoft.myaccounts;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -167,12 +169,30 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case REQUEST_PICK_FILE:
-
-                if(data.hasExtra(FilePicker.EXTRA_FILE_PATH)) {
-                    selectedFile = new File
-                            (data.getStringExtra(FilePicker.EXTRA_FILE_PATH));
-                    if(fragment instanceof ManageBackup)
-                        ((ManageBackup)fragment).restoreOffline(selectedFile);
+                if (resultCode == RESULT_OK) {
+                    Uri uri = data.getData();
+                    String filepath="";
+                    if ("content".equalsIgnoreCase(uri.getScheme())) {
+                            String[] projection = {"_data"};
+                            Cursor cursor = null;
+                            try{
+                                cursor = getApplicationContext().getContentResolver().query(uri, projection, null, null, null);
+                                int column_index = cursor.getColumnIndexOrThrow("_data");
+                                if (cursor.moveToFirst()) {
+                                    filepath= cursor.getString(column_index);
+                                 }
+                             } catch (Exception e) {
+                                e.printStackTrace();
+                             }
+                         }
+                         else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                            filepath= uri.getPath();
+                         }
+                    if(!filepath.equals("")) {
+                        File myFile=new File(filepath);
+                        if (fragment instanceof ManageBackup)
+                            ((ManageBackup) fragment).restoreOffline(myFile);
+                    }
                 }
                 break;
 
@@ -188,6 +208,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
+                System.exit(0);
                 dialog.dismiss();
             }
         });
