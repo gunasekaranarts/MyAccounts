@@ -2,10 +2,13 @@ package com.spicasoft.myaccounts;
 
 import android.app.ProgressDialog;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +16,18 @@ import android.widget.Button;
 import android.widget.Toast;
 import com.google.android.gms.drive.DriveFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import Database.MyAccountsDatabase;
+import POJO.SecurityProfile;
+import Utils.GMailSender;
 import Utils.RestoreFile;
 
 /**
@@ -22,18 +36,22 @@ import Utils.RestoreFile;
 
 public class ManageBackup extends Fragment {
     MyAccountsDatabase mHelper;
-    Button btn_upload,btn_restore;
+    Button btn_upload, btn_restore, btn_off_backup, btn_off_restore;
     private static final int REQUEST_CODE_SIGN_IN = 0;
     ProgressDialog progressDialog;
-
+    private static final String username = "myaccappv1@gmail.com";
+    private static final String password = "Admin@9500";
 
     DriveFile file;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view= inflater.inflate(R.layout.dbcloud, container, false);
-        btn_upload=(Button) view.findViewById(R.id.btn_backup);
-        btn_restore=(Button) view.findViewById(R.id.btn_restore);
+        final View view = inflater.inflate(R.layout.dbcloud, container, false);
+        btn_upload = (AppCompatButton) view.findViewById(R.id.btn_backup);
+        btn_restore = (AppCompatButton) view.findViewById(R.id.btn_restore);
+        btn_off_backup = (AppCompatButton) view.findViewById(R.id.btn_off_backup);
+        btn_off_restore = (AppCompatButton) view.findViewById(R.id.btn_off_restore);
         mHelper = new MyAccountsDatabase(getActivity());
         progressDialog = new ProgressDialog(getActivity());
 
@@ -50,8 +68,23 @@ public class ManageBackup extends Fragment {
             }
         });
 
+        btn_off_backup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CreateOfflineBackup();
+            }
+        });
+        btn_off_restore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FilePicker.class);
+                startActivityForResult(intent, ((MainActivity)getActivity()).REQUEST_PICK_FILE);
+            }
+        });
+
         return view;
     }
+
     private class UploadData extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
@@ -72,6 +105,7 @@ public class ManageBackup extends Fragment {
             progressDialog.dismiss();
         }
     }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -80,11 +114,55 @@ public class ManageBackup extends Fragment {
     public void getFileFromAppFolder() {
         new RestoreFile(getActivity()).appFolder();
     }
+
     public void createFileInAppFolder() {
-        ((MainActivity)getActivity()).uploadFile.UploadFile();
+        ((MainActivity) getActivity()).uploadFile.UploadFile();
     }
+
     protected void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    public void CreateOfflineBackup() {
+        final File currentDB = new File("/data/data/com.spicasoft.myaccounts/databases/MyAccountsDatabase.db");
+        if (currentDB.exists()) {
+
+            File data = Environment.getDataDirectory();
+            File myDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/My Accounts/");
+            if (!myDir.exists()) {
+                myDir.mkdir();
+            }
+            myDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/My Accounts/Database");
+            if (!myDir.exists()) {
+                myDir.mkdir();
+            }
+            if (myDir.canWrite()) {
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat df = new SimpleDateFormat("ddMMyyyyHHmm");
+                String formattedDate = df.format(c.getTime());
+                File backupDB = new File(myDir, "MyAccountsDatabase"+formattedDate+".db");
+
+                FileChannel src = null;
+                FileChannel dst = null;
+                try {
+                    src = new FileInputStream(currentDB).getChannel();
+                    dst = new FileOutputStream(backupDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                showMessage("Backup Successful at " + backupDB.getAbsolutePath());
+            }
+        }
+    }
+    public void restoreOffline(File file)
+    {
+        showMessage("Restore Successful at " + file.getAbsolutePath());
     }
 
 }

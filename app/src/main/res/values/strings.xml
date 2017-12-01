@@ -34,7 +34,10 @@
     <string name="lbl_statement">Statement</string>
     <string name="lbl_from">From</string>
     <string name="lbl_to">To</string>
+    <string name="lbl_trans_key">Keyword</string>
     <string name="ask_pin">Enter Pin</string>
+    <string name="lbl_off_backup">Offline Backup</string>
+    <string name="lbl_off_restore">Offline Restore</string>
     <string name="backup_string">
         1. Only when you connect internet, backup/restore operation performed. \n
         2. We are using your google drive account to store your transaction data. \n

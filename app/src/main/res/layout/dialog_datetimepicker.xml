@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/lightpurple"
         android:elevation="10dp"
         android:gravity="center"
         android:orientation="horizontal">
@@ -26,7 +26,7 @@
         android:id="@+id/date_picker"
         android:layout_width="match_parent"
         android:calendarViewShown="false"
-        android:headerBackground="@color/addlayout"
+        android:headerBackground="@color/lightblue"
         android:spinnersShown="true"
         android:layout_weight="4"
         android:layout_height="0dp" />
@@ -34,7 +34,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/lightpurple"
         android:elevation="10dp"
         android:gravity="center">
 

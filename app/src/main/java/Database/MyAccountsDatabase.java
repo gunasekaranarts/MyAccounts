@@ -211,6 +211,8 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         }
         if(transactionFilter.getPersonId()!=0)
             query+=" and "+TransactionsTableData.TransactionPersonID+"="+transactionFilter.getPersonId();
+        if((transactionFilter.getKeyword()!=null))
+            query+=" and "+TransactionsTableData.TransactionName+" LIKE '%"+transactionFilter.getKeyword()+"%'";
 
 
         Cursor mCursor = dataBase.rawQuery(query, null);

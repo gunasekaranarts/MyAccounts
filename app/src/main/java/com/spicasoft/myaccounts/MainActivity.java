@@ -30,6 +30,7 @@ import com.google.android.gms.drive.DriveClient;
 import com.google.android.gms.drive.DriveResourceClient;
 import com.google.android.gms.tasks.Task;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,7 +54,9 @@ public class MainActivity extends AppCompatActivity
     public DriveResourceClient mDriveResourceClient;
     public DriveClient mDriveClient;
     private static final int REQUEST_CODE_SIGN_IN = 0;
+    public static final int REQUEST_PICK_FILE = 2;
     public UploadFile uploadFile;
+    public File selectedFile;
 
 
     @Override
@@ -161,6 +164,15 @@ public class MainActivity extends AppCompatActivity
 
                 } else {
 
+                }
+                break;
+            case REQUEST_PICK_FILE:
+
+                if(data.hasExtra(FilePicker.EXTRA_FILE_PATH)) {
+                    selectedFile = new File
+                            (data.getStringExtra(FilePicker.EXTRA_FILE_PATH));
+                    if(fragment instanceof ManageBackup)
+                        ((ManageBackup)fragment).restoreOffline(selectedFile);
                 }
                 break;
 

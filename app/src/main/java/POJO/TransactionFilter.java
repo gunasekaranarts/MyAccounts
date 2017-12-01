@@ -11,6 +11,7 @@ public class TransactionFilter implements Serializable {
     public String TransactionDate;
     public String FromDate;
     public String ToDate;
+    public String Keyword;
     public int PersonId;
     public String Month;
     public String Year;
@@ -46,6 +47,14 @@ public class TransactionFilter implements Serializable {
 
     public void setToDate(String toDate) {
         ToDate = toDate;
+    }
+
+    public String getKeyword() {
+        return Keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        Keyword = keyword;
     }
 
     public int getPersonId() {

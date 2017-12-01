@@ -72,21 +72,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <fr.ganfra.materialspinner.MaterialSpinner
-                    android:id="@+id/spr_Type"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    app:ms_multiline="false"
-                    app:ms_hint="@string/transaction_Type"
-                    app:ms_enableFloatingLabel="true"
-                    app:ms_enableErrorLabel="true"
-                    app:ms_floatingLabelText="@string/select_transaction"
-                    app:ms_errorColor="@color/red"
-                    >
-                </fr.ganfra.materialspinner.MaterialSpinner>
-
+                    android:orientation="horizontal">
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginTop="5dp">
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/trans_key"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/lbl_trans_key"
+                            android:inputType="textPersonName"
+                            android:paddingRight="10dp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textCursorDrawable="@null"
+                            android:textSize="@dimen/default_text_size" />
+                    </android.support.design.widget.TextInputLayout>
+                    <fr.ganfra.materialspinner.MaterialSpinner
+                        android:id="@+id/spr_Type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1"
+                        app:ms_multiline="false"
+                        app:ms_hint="@string/transaction_Type"
+                        app:ms_enableFloatingLabel="true"
+                        app:ms_enableErrorLabel="true"
+                        app:ms_floatingLabelText="@string/select_transaction"
+                        app:ms_errorColor="@color/red"
+                        >
+                    </fr.ganfra.materialspinner.MaterialSpinner>
+                </LinearLayout>
                     <fr.ganfra.materialspinner.MaterialSpinner
                         android:id="@+id/spr_persons"
                         android:layout_width="match_parent"
