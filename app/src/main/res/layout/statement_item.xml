@@ -19,7 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="31dp"
+            android:layout_marginStart="19dp"
+            android:maxWidth="220dp"
             android:layout_toEndOf="@+id/txt_date"
             android:text="TextView" />
 

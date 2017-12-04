@@ -213,7 +213,7 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
             query+=" and "+TransactionsTableData.TransactionPersonID+"="+transactionFilter.getPersonId();
         if((transactionFilter.getKeyword()!=null))
             query+=" and "+TransactionsTableData.TransactionName+" LIKE '%"+transactionFilter.getKeyword()+"%'";
-
+        query+= " order by "+ TransactionsTableData.TransactionDate+" ";
 
         Cursor mCursor = dataBase.rawQuery(query, null);
         if (mCursor.moveToFirst()){

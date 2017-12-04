@@ -3,14 +3,22 @@ package com.spicasoft.myaccounts;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.PersistableBundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,9 +31,17 @@ import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+
 import Database.MyAccountsDatabase;
 import POJO.SecurityProfile;
 import TableData.SecurityTableData;
+import Utils.ImageConvertor;
 
 /**
  * Created by USER on 08-11-2017.
@@ -34,10 +50,13 @@ import TableData.SecurityTableData;
 public class SecurityProfile_Activity extends AppCompatActivity {
     AppCompatEditText txtName,txtEmail,txtMobile;
     PinEntryEditText txtPassword,txtConfirmPassword;
+    AppCompatImageView img_profile;
     Button btn_Save;
     SQLiteDatabase dataBase;
+    File myBitmap;
     MyAccountsDatabase mHelper;
     SecurityProfile securityProfile;
+    private static final int REQUEST_PICK_FILE=200;
     LinearLayout layout_change_password;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +64,7 @@ public class SecurityProfile_Activity extends AppCompatActivity {
         setContentView(R.layout.security_profile);
         txtName=(AppCompatEditText) findViewById(R.id.txt_Name);
         txtEmail=(AppCompatEditText) findViewById(R.id.txt_Email);
+        img_profile=(AppCompatImageView) findViewById(R.id.img_profile);
         GoogleSignInAccount acc= GoogleSignIn.getLastSignedInAccount(getApplicationContext());
         if(acc!=null)
         {
@@ -104,10 +124,85 @@ public class SecurityProfile_Activity extends AppCompatActivity {
                 btn_Save.requestFocus();
             }
         });
-
+        img_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                //sets the select file to all types of files
+                intent.setType("image/*");
+                //allows to select data and return it
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                //starts new activity to select file and return data
+                startActivityForResult(Intent.createChooser(intent,
+                        "Choose File to Restore.."),REQUEST_PICK_FILE);
+            }
+        });
 
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_PICK_FILE :
+                if (resultCode == RESULT_OK) {
+                    Uri uri = data.getData();
+                    String filepath="";
+                    if ("content".equalsIgnoreCase(uri.getScheme())) {
+                        String[] projection = {"_data"};
+                        Cursor cursor = null;
+                        try{
+                            cursor = getApplicationContext().getContentResolver().query(uri, projection, null, null, null);
+                            int column_index = cursor.getColumnIndexOrThrow("_data");
+                            if (cursor.moveToFirst()) {
+                                filepath= cursor.getString(column_index);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                        filepath= uri.getPath();
+                    }
+                    if(!filepath.equals("")) {
+                      ScalandSetProfile(filepath);
+                    }
+                }else{
+
+                }
+                break;
+        }
+    }
+
+    private void ScalandSetProfile(String filepath) {
+        File myDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/My Accounts/");
+        if (!myDir.exists()) {
+            myDir.mkdir();
+        }
+        if (myDir.canWrite()) {
+            try {
+                Bitmap b= BitmapFactory.decodeFile(filepath);
+                Bitmap out=ImageConvertor.getRoundedCornerBitmap(b,100);
+                File file = new File(myDir, "1.png");
+                FileOutputStream fOut;
+                fOut = new FileOutputStream(file);
+                out.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                out.recycle();
+                fOut.flush();
+                fOut.close();
+                b.recycle();
+                out.recycle();
+                img_profile.setImageURI(Uri.fromFile(file));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
 
     private class SaveProfileSetup extends AsyncTask<String, String, String> {
         @Override
@@ -137,6 +232,7 @@ public class SecurityProfile_Activity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent=new Intent(SecurityProfile_Activity.this,Password_Activity.class);
                 startActivity(intent);
+                finish();
                 dialog.dismiss();
             }
         });

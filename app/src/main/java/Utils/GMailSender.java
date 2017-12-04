@@ -56,6 +56,7 @@ public class GMailSender extends javax.mail.Authenticator {
             MimeMessage message = new MimeMessage(session);
             DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));
             message.setSender(new InternetAddress(sender,"My Accounts App"));
+            message.setFrom(new InternetAddress("no-reply@myaccounts.com","My Accounts App"));
             message.setSubject(subject);
             message.setDataHandler(handler);
             if (recipients.indexOf(',') > 0)

@@ -31,8 +31,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SecurityProfile_Activity"
-            android:screenOrientation="portrait"
-            android:noHistory="true"/>
+            android:screenOrientation="portrait">
+       </activity>
         <activity android:name=".Password_Activity"
             android:screenOrientation="portrait"
             android:noHistory="true"/>
