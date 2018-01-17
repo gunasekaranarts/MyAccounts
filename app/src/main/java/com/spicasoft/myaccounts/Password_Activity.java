@@ -21,14 +21,14 @@ import com.alimuzaffar.lib.pin.PinEntryEditText;
 import Database.MyAccountsDatabase;
 import POJO.SecurityProfile;
 import Utils.GMailSender;
+import Utils.NetworkUtil;
 
 /**
  * Created by USER on 08-11-2017.
  */
 
 public class Password_Activity extends AppCompatActivity {
-//    AppCompatEditText txtpassword;
-//    AppCompatButton btnlogin;
+
     MyAccountsDatabase mHelper;
     SecurityProfile securityProfile;
     TextView lnkforgorpwd;
@@ -69,8 +69,10 @@ public class Password_Activity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
-                new sendmail().execute();
+                if(NetworkUtil.isNetworkAvailable(getApplicationContext()))
+                    new sendmail().execute();
+                else
+                Toast.makeText(getApplicationContext(),"No internet connection found!",Toast.LENGTH_LONG).show();
             }
         });
 

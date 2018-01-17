@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import POJO.Persons;
 import POJO.SecurityProfile;
@@ -176,7 +179,7 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         SQLiteDatabase dataBase = this.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(TransactionsTableData.TransactionTypeID, transaction.getTransactionTypeID());
-        values.put(TransactionsTableData.TransactionDate, transaction.getTransactionDate());
+        values.put(TransactionsTableData.TransactionDate, transaction.getTransactionDate().replace("-",""));
         values.put(TransactionsTableData.TransactionName, transaction.getTransactionName());
         values.put(TransactionsTableData.TransactionDesc, transaction.getTransactionDesc());
         values.put(TransactionsTableData.TransactionAmount, transaction.getTransactionAmount());
@@ -199,13 +202,13 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         String query="select * from "+ TransactionsTableData.TransactionTableName
                 +" where "+TransactionsTableData.TransactionID+" is not null ";
         if((transactionFilter.getTransactionDate()!=null))
-            query+=" and "+TransactionsTableData.TransactionDate+"='"+transactionFilter.getTransactionDate()+"'";
+            query+=" and "+TransactionsTableData.TransactionDate+"='"+transactionFilter.getTransactionDate().replace("-","")+"'";
         if(!(transactionFilter.getTransactionId()==0))
             query+=" and "+TransactionsTableData.TransactionID+"='"+transactionFilter.getTransactionId()+"'";
         if(transactionFilter.getFromDate()!=null)
-            query+=" and "+TransactionsTableData.TransactionDate+">='"+transactionFilter.getFromDate()+"'";
+            query+=" and "+TransactionsTableData.TransactionDate+">='"+transactionFilter.getFromDate().replace("-","")+"'";
         if(transactionFilter.getToDate()!=null)
-            query+=" and "+TransactionsTableData.TransactionDate+"<='"+transactionFilter.getToDate()+"'";
+            query+=" and "+TransactionsTableData.TransactionDate+"<='"+transactionFilter.getToDate().replace("-","")+"'";
         if(transactionFilter.getTransactionTypeId()!=0) {
             query += " and " + TransactionsTableData.TransactionTypeID + "=" + transactionFilter.getTransactionTypeId();
         }
@@ -221,7 +224,11 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
                 Transaction transaction=new Transaction();
                 transaction.setTransactionID(mCursor.getInt(mCursor.getColumnIndex(TransactionsTableData.TransactionID)));
                 transaction.setTransactionTypeID(mCursor.getInt(mCursor.getColumnIndex(TransactionsTableData.TransactionTypeID)));
-                transaction.setTransactionDate(mCursor.getString(mCursor.getColumnIndex(TransactionsTableData.TransactionDate)));
+                String TransDate=mCursor.getString(mCursor.getColumnIndex(TransactionsTableData.TransactionDate));
+                StringBuilder transdates = new StringBuilder(TransDate);
+                transdates.insert(4,"-");
+                transdates.insert(7,"-");
+                transaction.setTransactionDate(transdates.toString());
                 transaction.setTransactionName(mCursor.getString(mCursor.getColumnIndex(TransactionsTableData.TransactionName)));
                 transaction.setTransactionDesc(mCursor.getString(mCursor.getColumnIndex(TransactionsTableData.TransactionDesc)));
                 transaction.setTransactionAmount(mCursor.getInt(mCursor.getColumnIndex(TransactionsTableData.TransactionAmount)));

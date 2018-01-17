@@ -329,7 +329,7 @@ public class AddTransaction extends Fragment {
             public void onClick(View v) {
                 String month = String.valueOf(dp.getMonth() + 1);
                 String day = String.valueOf(dp.getDayOfMonth());
-                String strDateTime = ((day.length() == 1 ? "0" + day : day)) + "-" + (((month.length() == 1 ? "0" + month : month))) + "-" + dp.getYear();
+                String strDateTime = ( dp.getYear() + "-" + (((month.length() == 1 ? "0" + month : month))) + "-" + (day.length() == 1 ? "0" + day : day));
 
                 switch (i) {
                     case 1:

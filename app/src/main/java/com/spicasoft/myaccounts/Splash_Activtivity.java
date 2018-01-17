@@ -471,9 +471,15 @@ public class Splash_Activtivity extends AppCompatActivity {
     }
     public void gotoSetupProfile()
     {
-                Intent send = new Intent(getApplicationContext(), SecurityProfile_Activity.class);
-                startActivity(send);
-                finish();
+        if(securityProfile==null) {
+            Intent send = new Intent(getApplicationContext(), SecurityProfile_Activity.class);
+            startActivity(send);
+            finish();
+        }else{
+            Intent send = new Intent(getApplicationContext(), Password_Activity.class);
+            startActivity(send);
+            finish();
+        }
     }
     public void checkBackup(){
         final Task<DriveFolder> appFolderTask =mDriveResourceClient.getAppFolder();
