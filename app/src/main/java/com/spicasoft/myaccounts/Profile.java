@@ -4,21 +4,32 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import Database.MyAccountsDatabase;
 import POJO.SecurityProfile;
 import TableData.SecurityTableData;
+import Utils.ImageConvertor;
 
 /**
  * Created by USER on 27-11-2017.
@@ -31,6 +42,7 @@ public class Profile extends Fragment {
     SQLiteDatabase dataBase;
     MyAccountsDatabase mHelper;
     SecurityProfile securityProfile;
+    AppCompatImageView img_profile;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +55,7 @@ public class Profile extends Fragment {
         txtEmail=(AppCompatEditText)view.findViewById(R.id.txt_Email);
         txtMobile=(AppCompatEditText)view.findViewById(R.id.txt_Mobile);
         btn_Save=(Button) view.findViewById(R.id.btn_save);
+        img_profile=(AppCompatImageView)view.findViewById(R.id.img_profile);
         mHelper = new MyAccountsDatabase(getActivity());
 
 
@@ -66,7 +79,47 @@ public class Profile extends Fragment {
                 }
             }
         });
+        img_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                //sets the select file to all types of files
+                intent.setType("image/*");
+                //allows to select data and return it
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                //starts new activity to select file and return data
+                getActivity().startActivityForResult(Intent.createChooser(intent,
+                        "Choose File to Restore.."),200);
+            }
+        });
         return view;
+    }
+    public void ScalandSetProfile(String filepath) {
+        File myDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/My Accounts/");
+        if (!myDir.exists()) {
+            myDir.mkdir();
+        }
+        if (myDir.canWrite()) {
+            try {
+                Bitmap b= BitmapFactory.decodeFile(filepath);
+                Bitmap out=ImageConvertor.getRoundedCornerBitmap(b,100);
+                File file = new File(myDir, "1.png");
+                FileOutputStream fOut;
+                fOut = new FileOutputStream(file);
+                out.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                out.recycle();
+                fOut.flush();
+                fOut.close();
+                b.recycle();
+                out.recycle();
+                img_profile.setImageURI(Uri.fromFile(file));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private void Initialize() {
@@ -75,6 +128,11 @@ public class Profile extends Fragment {
         txtName.setText(securityProfile.getName());
         txtEmail.setText(securityProfile.getEmail());
         txtMobile.setText(securityProfile.getMobile());
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/My Accounts/1.png");
+        if(file.exists())
+            img_profile.setImageURI(Uri.fromFile(file));
+        else
+            img_profile.setImageResource(R.drawable.profile);
     }
     public void showAlertWithCancels(String BuilderText) {
         android.support.v7.app.AlertDialog.Builder builder =

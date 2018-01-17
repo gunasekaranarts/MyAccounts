@@ -26,6 +26,24 @@
             android:text="@string/btn_restore"
             android:textColor="@color/white"
             android:background="@drawable/button_press"/>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_off_backup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:text="@string/lbl_off_backup"
+            android:textColor="@color/white"
+            android:background="@drawable/button_press"/>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_off_restore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:text="@string/lbl_off_restore"
+            android:textColor="@color/white"
+            android:background="@drawable/button_press"/>
     </LinearLayout>
 
     <TextView

@@ -1,8 +1,10 @@
 package com.spicasoft.myaccounts;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -18,17 +20,23 @@ import com.alimuzaffar.lib.pin.PinEntryEditText;
 
 import Database.MyAccountsDatabase;
 import POJO.SecurityProfile;
+import Utils.GMailSender;
+import Utils.NetworkUtil;
 
 /**
  * Created by USER on 08-11-2017.
  */
 
 public class Password_Activity extends AppCompatActivity {
-//    AppCompatEditText txtpassword;
-//    AppCompatButton btnlogin;
+
     MyAccountsDatabase mHelper;
     SecurityProfile securityProfile;
     TextView lnkforgorpwd;
+    public String teamNo;
+    private static final String username = "myaccappv1@gmail.com";
+    private static final String password = "Admin@9500";
+    ProgressDialog progressDialog;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +44,7 @@ public class Password_Activity extends AppCompatActivity {
         lnkforgorpwd=(TextView) findViewById(R.id.lnk_forgot_password);
         mHelper=new MyAccountsDatabase(this);
         securityProfile=mHelper.getProfile();
+        progressDialog = new ProgressDialog(this);
         final PinEntryEditText pinEntry = (PinEntryEditText) findViewById(R.id.txt_pin_entry);
         if (pinEntry != null) {
             pinEntry.requestFocus();
@@ -50,7 +59,7 @@ public class Password_Activity extends AppCompatActivity {
                       Intent send = new Intent(getApplicationContext(), MainActivity.class);
                       startActivity(send);
                     } else {
-                        Toast.makeText(Password_Activity.this, "Invalid password", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Password_Activity.this, "Invalid pin", Toast.LENGTH_SHORT).show();
                         pinEntry.setText(null);
                     }
                 }
@@ -60,12 +69,52 @@ public class Password_Activity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                showAlertWithCancels("Your new pin has been sent to your email id : "
-                        +securityProfile.getEmail());
+                if(NetworkUtil.isNetworkAvailable(getApplicationContext()))
+                    new sendmail().execute();
+                else
+                Toast.makeText(getApplicationContext(),"No internet connection found!",Toast.LENGTH_LONG).show();
             }
         });
 
     }
+    private class sendmail extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog.setMessage("Please wait...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            SendPinMail();
+            return "sucess full added";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            progressDialog.dismiss();
+            showAlertWithCancels("Your new pin has been sent to your email id : "
+                    +securityProfile.getEmail());
+        }
+    }
+
+    private void SendPinMail() {
+        try {
+            GMailSender sender = new GMailSender(username, password);
+            sender.sendMail("My Accounts App - Forgot pin",
+                    "Dear, " +securityProfile.getName()+", \n \n " +
+                            "Your pin for the app is : "+securityProfile.getPassword()+" \n\n\n Thanks \n With regards \n - Admin",
+                    username,
+                    securityProfile.getEmail());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void showAlertWithCancels(String BuilderText) {
         android.support.v7.app.AlertDialog.Builder builder =
                 new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);

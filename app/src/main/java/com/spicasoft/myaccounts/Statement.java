@@ -79,7 +79,7 @@ import jxl.write.WritableWorkbook;
 
 public class Statement extends Fragment {
     TextAwesome lnk_save,lnk_share;
-    AppCompatEditText fromDate,toDate;
+    AppCompatEditText fromDate,toDate,transKey;
     MaterialSpinner type;
     MaterialSpinner person;
     ArrayList<Transaction> transactions;
@@ -105,6 +105,7 @@ public class Statement extends Fragment {
         lnk_share=(TextAwesome)view.findViewById(R.id.lnk_share);
         fromDate=(AppCompatEditText)view.findViewById(R.id.from_date);
         toDate=(AppCompatEditText)view.findViewById(R.id.to_date);
+        transKey=(AppCompatEditText)view.findViewById(R.id.trans_key);
         type=(MaterialSpinner)view.findViewById(R.id.spr_Type);
         person=(MaterialSpinner)view.findViewById(R.id.spr_persons);
         btn_search=(AppCompatImageButton)view.findViewById(R.id.btn_search);
@@ -173,6 +174,7 @@ public class Statement extends Fragment {
             public void onClick(View v) {
                 fromDate.setText("");
                 toDate.setText("");
+                transKey.setText("");;
                 type.setSelection(0);
                 person.setSelection(0);
                 if(transactions!=null)
@@ -249,6 +251,8 @@ public class Statement extends Fragment {
             filter.setFromDate(fromDate.getText().toString());
         if(!toDate.getText().toString().equals(""))
             filter.setToDate(toDate.getText().toString());
+        if(!transKey.getText().toString().equals(""))
+            filter.setKeyword(transKey.getText().toString());
         if(type.getSelectedItemPosition()!=0) {
             int s=type.getSelectedItemPosition();
             selectedTransType = new TransactionType();
@@ -319,7 +323,7 @@ public class Statement extends Fragment {
             public void onClick(View v) {
                 String month = String.valueOf(dp.getMonth() + 1);
                 String day = String.valueOf(dp.getDayOfMonth());
-                String strDateTime = ((day.length() == 1 ? "0" + day : day)) + "-" + (((month.length() == 1 ? "0" + month : month))) + "-" + dp.getYear();
+                String strDateTime = ( dp.getYear()+ "-" + (((month.length() == 1 ? "0" + month : month))) + "-" + (day.length() == 1 ? "0" + day : day));
 
                 switch (i) {
                     case 1:
@@ -548,6 +552,10 @@ public class Statement extends Fragment {
             preface.add(new Paragraph(
                     "Date : "+filter.getTransactionDate().toString(),
                     subFont));
+        if(filter.getKeyword()!=null)
+            preface.add(new Paragraph(
+                    "Keyword : "+filter.getKeyword().toString(),
+                    subFont));
         if(filter.getTransactionTypeId()!=0)
             preface.add(new Paragraph(
                     "Transaction Type : "+TransactionType.getItemById(transactionType
@@ -680,7 +688,7 @@ public class Statement extends Fragment {
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "My Accounts Statement");
         emailIntent.setType("plain/text");
         File fileIn = new File(path);
-        String message = "My Accounts app statement \n Attachment Name: "+fileIn.getName()+"\n PFA";
+        String message = "My Accounts app statement \n\n Attachment Name: "+fileIn.getName()+"\n PFA";
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,message);
         emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(fileIn));
         startActivity(Intent.createChooser(emailIntent, "Send via..."));

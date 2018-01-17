@@ -1,22 +1,20 @@
 package com.spicasoft.myaccounts;
 
 
-import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,7 +24,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ProgressBar;
+import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,32 +36,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveClient;
-import com.google.android.gms.drive.DriveContents;
-import com.google.android.gms.drive.DriveFile;
-import com.google.android.gms.drive.DriveFolder;
-import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.DriveResourceClient;
-import com.google.android.gms.drive.MetadataChangeSet;
-import com.google.android.gms.drive.OpenFileActivityOptions;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 import Database.MyAccountsDatabase;
-import GoogleDriveIntegration.BaseDemoActivity;
 import POJO.SecurityProfile;
-import Utils.AppPreferences;
 import Utils.UploadFile;
 
 public class MainActivity extends AppCompatActivity
@@ -81,7 +66,10 @@ public class MainActivity extends AppCompatActivity
     public DriveResourceClient mDriveResourceClient;
     public DriveClient mDriveClient;
     private static final int REQUEST_CODE_SIGN_IN = 0;
+    public static final int REQUEST_PICK_FILE = 2;
+    private static final int REQUEST_PICK_PROFILE=200;
     public UploadFile uploadFile;
+    ImageView nav_profile;
 
 
     @Override
@@ -127,6 +115,7 @@ public class MainActivity extends AppCompatActivity
         final View headerView = navigationView.getHeaderView(0);
         txtuserName= (TextView) headerView.findViewById(R.id.userName);
         txtusermail= (TextView) headerView.findViewById(R.id.emailId);
+        nav_profile=(ImageView) headerView.findViewById(R.id.nav_profile);
         UpdateUserDetails();
         fragment = new Today();
         FragmentTransaction fragmentTransaction=
@@ -139,16 +128,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void signIn() {
-//        Set<Scope> requiredScopes = new HashSet<>(2);
-//        requiredScopes.add(Drive.SCOPE_FILE);
-//        requiredScopes.add(Drive.SCOPE_APPFOLDER);
- //       GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
-//        if (signInAccount != null && signInAccount.getGrantedScopes().containsAll(requiredScopes)) {
-//            initializeDriveClient(signInAccount);
-//        } else {
+        Set<Scope> requiredScopes = new HashSet<>(2);
+        requiredScopes.add(Drive.SCOPE_FILE);
+        requiredScopes.add(Drive.SCOPE_APPFOLDER);
+        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        if (signInAccount != null && signInAccount.getGrantedScopes().containsAll(requiredScopes)) {
+            initializeDriveClient(signInAccount);
+        } else {
             mGoogleSignInClient = buildGoogleSignInClient();
             this.startActivityForResult(mGoogleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-//        }
+        }
 
     }
     private GoogleSignInClient buildGoogleSignInClient() {
@@ -168,6 +157,11 @@ public class MainActivity extends AppCompatActivity
         securityProfile = mHelper.getProfile();
         txtuserName.setText(securityProfile.getName());
         txtusermail.setText(securityProfile.getEmail());
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/My Accounts/1.png");
+        if(file.exists())
+            nav_profile.setImageURI(Uri.fromFile(file));
+        else
+            nav_profile.setImageResource(R.drawable.profile_user);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -188,13 +182,69 @@ public class MainActivity extends AppCompatActivity
                     initializeDriveClient(getAccountTask.getResult());
 
                 } else {
-
+                    Toast.makeText(this,
+                            "Unable to sign in to google account",Toast.LENGTH_LONG).show();
+                }
+                break;
+            case REQUEST_PICK_FILE:
+                if (resultCode == RESULT_OK) {
+                    Uri uri = data.getData();
+                    String filepath="";
+                    if ("content".equalsIgnoreCase(uri.getScheme())) {
+                            String[] projection = {"_data"};
+                            Cursor cursor = null;
+                            try{
+                                cursor = getApplicationContext().getContentResolver().query(uri, projection, null, null, null);
+                                int column_index = cursor.getColumnIndexOrThrow("_data");
+                                if (cursor.moveToFirst()) {
+                                    filepath= cursor.getString(column_index);
+                                 }
+                             } catch (Exception e) {
+                                e.printStackTrace();
+                             }
+                         }
+                         else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                            filepath= uri.getPath();
+                         }
+                    if(!filepath.equals("")) {
+                        File myFile=new File(filepath);
+                        if (fragment instanceof ManageBackup)
+                            ((ManageBackup) fragment).restoreOffline(myFile);
+                    }
+                }
+                break;
+            case REQUEST_PICK_PROFILE :
+                if (resultCode == RESULT_OK) {
+                    Uri uri = data.getData();
+                    String filepath="";
+                    if ("content".equalsIgnoreCase(uri.getScheme())) {
+                        String[] projection = {"_data"};
+                        Cursor cursor = null;
+                        try{
+                            cursor = getApplicationContext().getContentResolver().query(uri, projection, null, null, null);
+                            int column_index = cursor.getColumnIndexOrThrow("_data");
+                            if (cursor.moveToFirst()) {
+                                filepath= cursor.getString(column_index);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                        filepath= uri.getPath();
+                    }
+                    if(!filepath.equals("")) {
+                        if(fragment instanceof Profile) {
+                            ((Profile)fragment).ScalandSetProfile(filepath);
+                        }
+                    }
                 }
                 break;
 
         }
         fragment.onActivityResult(requestCode, resultCode, data);
     }
+
     public void showAlertWithCancels(String BuilderText) {
         AlertDialog.Builder builder =
                 new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
@@ -204,6 +254,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
+                System.exit(0);
                 dialog.dismiss();
             }
         });
@@ -309,6 +360,8 @@ public class MainActivity extends AppCompatActivity
                 fragment=new Change_Password();
                 fab.hide();
             }
+        }else if(id==R.id.nav_about){
+            ShowDialogTransDate();
         }
         FragmentTransaction fragmentTransaction=
                 getSupportFragmentManager().beginTransaction();
@@ -330,6 +383,14 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    private void ShowDialogTransDate() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.about_dialog);
+        dialog.show();
 
+    }
 
 }

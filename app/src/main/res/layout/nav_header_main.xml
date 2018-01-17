@@ -12,6 +12,13 @@
     android:paddingTop="30dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
+    <ImageView
+        android:id="@+id/nav_profile"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/profile_user"
+        />
+
     <TextView
         android:id="@+id/userName"
         android:layout_width="match_parent"

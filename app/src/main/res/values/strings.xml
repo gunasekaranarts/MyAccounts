@@ -34,6 +34,10 @@
     <string name="lbl_statement">Statement</string>
     <string name="lbl_from">From</string>
     <string name="lbl_to">To</string>
+    <string name="lbl_trans_key">Keyword</string>
+    <string name="ask_pin">Enter Pin</string>
+    <string name="lbl_off_backup">Offline Backup</string>
+    <string name="lbl_off_restore">Offline Restore</string>
     <string name="backup_string">
         1. Only when you connect internet, backup/restore operation performed. \n
         2. We are using your google drive account to store your transaction data. \n
@@ -41,6 +45,11 @@
         4. Only you can access details via this app. \n
         5. Please do regular backup inorder to keep your transactions safety. \n
     </string>
+    <string name="Title">My Accounts App</string>
+    <string name="app">App Name \t: \tMy Accounts</string>
+    <string name="version">Version\t   :   \t1.1</string>
+    <string name="app_desc">This app used to maintain your day to day transactions</string>
+    <string name="developer">Developed by Guna</string>
     <string-array name="test">
         <item>Test</item>
         <item>test1</item>

@@ -91,6 +91,7 @@ public class Splash_Activtivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
         getSupportActionBar().hide();
+        progressDialog = new ProgressDialog(this);
         PermissionCheckUP();
         mHelper = new MyAccountsDatabase(Splash_Activtivity.this);
         SecurityProfileView();
@@ -436,7 +437,7 @@ public class Splash_Activtivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(Splash_Activtivity.this);
+
             progressDialog.setMessage("Please wait...");
             progressDialog.show();
         }
@@ -470,9 +471,15 @@ public class Splash_Activtivity extends AppCompatActivity {
     }
     public void gotoSetupProfile()
     {
-                Intent send = new Intent(getApplicationContext(), SecurityProfile_Activity.class);
-                startActivity(send);
-                finish();
+        if(securityProfile==null) {
+            Intent send = new Intent(getApplicationContext(), SecurityProfile_Activity.class);
+            startActivity(send);
+            finish();
+        }else{
+            Intent send = new Intent(getApplicationContext(), Password_Activity.class);
+            startActivity(send);
+            finish();
+        }
     }
     public void checkBackup(){
         final Task<DriveFolder> appFolderTask =mDriveResourceClient.getAppFolder();

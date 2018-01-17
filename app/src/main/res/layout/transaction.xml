@@ -15,9 +15,8 @@
             android:id="@+id/imageTransaction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/txt_TransactionDesc"
+            android:layout_alignParentStart="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="3dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/fa_upload"
@@ -30,52 +29,55 @@
             android:id="@+id/txt_narration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="270dp"
             android:layout_alignParentTop="true"
             android:layout_marginStart="11dp"
             android:layout_toEndOf="@+id/imageTransaction"
             android:textStyle="bold"
             android:textSize="15sp"
-            android:text="TextView" />
+            android:text=" sd sd weh weubf wiuweb wiuebw wiubew iwuebw iweb " />
 
         <TextView
             android:id="@+id/txt_TransactionDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="270dp"
             android:layout_alignStart="@+id/txt_narration"
             android:layout_below="@+id/txt_narration"
-            android:text="TextView" />
+            android:text=" sd sd weh weubf wiuweb wiuebw wiubew iwuebw iweb" />
 
         <TextView
             android:id="@+id/txt_Transaction_Amt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txt_narration"
+            android:layout_alignBottom="@+id/txt_narration"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
             android:text="TextView" />
 
         <CustomWidget.TextAwesome
             android:id="@+id/edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/txt_Transaction_Amt"
             android:layout_below="@+id/txt_narration"
             android:layout_gravity="center"
-            android:layout_marginRight="30dp"
+            android:layout_toStartOf="@+id/delete"
             android:layout_weight="1"
             android:gravity="right"
+            android:layout_marginRight="10dp"
             android:text="@string/fa_pencil"
             android:textColor="@color/black"
-            android:textSize="26dp"
+            android:textSize="24dp"
             android:textStyle="bold" />
 
         <CustomWidget.TextAwesome
             android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/txt_Transaction_Amt"
-            android:layout_below="@+id/txt_Transaction_Amt"
+            android:layout_alignBaseline="@+id/edit"
+            android:layout_alignBottom="@+id/edit"
+            android:layout_alignParentEnd="true"
             android:layout_gravity="center"
-            android:layout_marginEnd="1dp"
             android:layout_weight="3"
             android:gravity="center"
             android:text="@string/fa_trash"
