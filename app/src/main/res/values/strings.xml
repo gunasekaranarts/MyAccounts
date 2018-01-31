@@ -26,8 +26,11 @@
     <string name="lbl_go">Go</string>
     <string name="forgot_password">Forgot pin?</string>
     <string name="lbl_person">Person Name</string>
+    <string name="lbl_customer">Customer Name</string>
     <string name="lbl_mobile">Mobile No</string>
-    <string name="lbl_manage">Manage persons</string>
+    <string name="lbl_customer_place">Place</string>
+    <string name="lbl_manage_person">Manage persons</string>
+    <string name="lbl_manage_customer">Manage Customer</string>
     <string name="btn_backup">BackUp</string>
     <string name="btn_restore">Restore</string>
     <string name="lbl_transactions">Transactions</string>

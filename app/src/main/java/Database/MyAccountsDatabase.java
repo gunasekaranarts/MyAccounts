@@ -11,11 +11,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import POJO.Customers;
 import POJO.Persons;
 import POJO.SecurityProfile;
 import POJO.Transaction;
 import POJO.TransactionFilter;
 import POJO.TransactionType;
+import TableData.CustomerTransactionTableData;
+import TableData.CustomersTableData;
 import TableData.PersonsTableData;
 import TableData.SecurityTableData;
 import TableData.TransactionTypeTableData;
@@ -26,10 +29,11 @@ import TableData.TransactionsTableData;
  */
 
 public class MyAccountsDatabase extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "MyAccountsDatabase.db";
     public ArrayList<TransactionType> transactionTypes;
     public ArrayList<Persons> persons;
+    public ArrayList<Customers> customers;
     public ArrayList<Transaction> transactions;
     public String databasePath = "";
     ArrayList<Integer> IncomeId,ExpenseId;
@@ -48,8 +52,12 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
             TransactionsTableData.TransactionTypeID + TransactionsTableData.INTEGER + TransactionsTableData.TransactionName + TransactionsTableData.TEXT + TransactionsTableData.TransactionDesc+ TransactionsTableData.TEXT+
             TransactionsTableData.TransactionAmount+TransactionsTableData.INTEGER+
             TransactionsTableData.TransactionDate+ TransactionsTableData.TEXT+ TransactionsTableData.TransactionPersonID +" INTEGER);";
-
-
+    String CreateCustomerQurey = "Create Table " + CustomersTableData.CustomerTableName + " ("+ CustomersTableData.CustomerID + CustomersTableData.ID_AUTOINCREMENT + CustomersTableData.CustomerName + CustomersTableData.TEXT+
+            CustomersTableData.CustomerMobile + CustomersTableData.TEXT + CustomersTableData.CustomerPlace +" TEXT);";
+    String CreateCustTransactionsQurey = "Create Table " + CustomerTransactionTableData.CustomerTransactionTableName + " (" + CustomerTransactionTableData.CustomerTransactionId + CustomerTransactionTableData.ID_AUTOINCREMENT+
+            CustomerTransactionTableData.TransactionType + CustomerTransactionTableData.INTEGER + CustomerTransactionTableData.TransactionDesc + CustomerTransactionTableData.TEXT + CustomerTransactionTableData.CustomerID+ CustomerTransactionTableData.INTEGER+
+            CustomerTransactionTableData.TransactionAmt+TransactionsTableData.INTEGER+
+            CustomerTransactionTableData.TransactionDate+" TEXT);";
 
     public MyAccountsDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -85,11 +93,13 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion != newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + SecurityTableData.SecurityTableName + ";");
-            db.execSQL("DROP TABLE IF EXISTS " + TransactionTypeTableData.TransactionTypeTableName + ";");
-            db.execSQL("DROP TABLE IF EXISTS " + PersonsTableData.PersonTableName + ";");
-            db.execSQL("DROP TABLE IF EXISTS " + TransactionsTableData.TransactionTableName + ";");
-            onCreate(db);
+            db.execSQL(CreateCustomerQurey);
+            db.execSQL(CreateCustTransactionsQurey);
+//            db.execSQL("DROP TABLE IF EXISTS " + SecurityTableData.SecurityTableName + ";");
+//            db.execSQL("DROP TABLE IF EXISTS " + TransactionTypeTableData.TransactionTypeTableName + ";");
+//            db.execSQL("DROP TABLE IF EXISTS " + PersonsTableData.PersonTableName + ";");
+//            db.execSQL("DROP TABLE IF EXISTS " + TransactionsTableData.TransactionTableName + ";");
+//            onCreate(db);
         }
     }
     public ArrayList<TransactionType> getTransactionTypes(){
@@ -128,6 +138,25 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.close();
         return persons;
     }
+    public ArrayList<Customers> getCustomers(){
+        customers=new ArrayList<Customers>();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor mCursor = sqLiteDatabase.rawQuery("SELECT * FROM " + CustomersTableData.CustomerTableName, null);
+        if (mCursor.moveToFirst()){
+            do{
+                Customers customer=new Customers();
+                customer.setCustomerID(mCursor.getInt(mCursor.getColumnIndex(CustomersTableData.CustomerID)));
+                customer.setCustomerName(mCursor.getString(mCursor.getColumnIndex(CustomersTableData.CustomerName)));
+                customer.setCustomerMobile(mCursor.getString(mCursor.getColumnIndex(CustomersTableData.CustomerMobile)));
+                customer.setCustomerPlace(mCursor.getString(mCursor.getColumnIndex(CustomersTableData.CustomerPlace)));
+                customers.add(customer);
+
+            }while (mCursor.moveToNext());
+            mCursor.close();
+        }
+        sqLiteDatabase.close();
+        return customers;
+    }
     public SecurityProfile getProfile(){
         SecurityProfile securityProfile= new SecurityProfile();
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
@@ -152,6 +181,15 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         values.put(PersonsTableData.PersonName, person.getPersonName());
         values.put(PersonsTableData.PersonMobile, person.getMobile());
         dataBase.insert(PersonsTableData.PersonTableName, null, values);
+        dataBase.close();
+    }
+    public void SaveCustomerData(Customers customer) {
+        SQLiteDatabase dataBase = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(CustomersTableData.CustomerName, customer.getCustomerName());
+        values.put(CustomersTableData.CustomerMobile, customer.getCustomerMobile());
+        values.put(CustomersTableData.CustomerPlace, customer.getCustomerPlace());
+        dataBase.insert(CustomersTableData.CustomerTableName, null, values);
         dataBase.close();
     }
     public int getAvailableBalance(){

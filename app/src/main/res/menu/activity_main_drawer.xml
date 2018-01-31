@@ -17,6 +17,10 @@
             android:icon="@drawable/ic_menu_person"
             android:title="Manage Persons" />
         <item
+            android:id="@+id/nav_customers"
+            android:icon="@drawable/ic_menu_person"
+            android:title="Manage Customers" />
+        <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_menu_profile"
             android:title="Profile" />
