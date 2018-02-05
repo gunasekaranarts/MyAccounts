@@ -12,6 +12,7 @@
     <string name="transaction_Type">Transaction Type</string>
     <string name="select_transaction">Select Transaction Type</string>
     <string name="spr_preson">Select Person</string>
+    <string name="spr_customer">Select Customer</string>
     <string name="trans_Amt">Amount</string>
     <string name="setup_profile">Set your profile</string>
     <string name="profile_name">Name</string>
@@ -31,6 +32,7 @@
     <string name="lbl_customer_place">Place</string>
     <string name="lbl_manage_person">Manage persons</string>
     <string name="lbl_manage_customer">Manage Customer</string>
+    <string name="lbl_manage_cust_trans">Customer Transactions</string>
     <string name="btn_backup">BackUp</string>
     <string name="btn_restore">Restore</string>
     <string name="lbl_transactions">Transactions</string>
@@ -41,6 +43,8 @@
     <string name="ask_pin">Enter Pin</string>
     <string name="lbl_off_backup">Offline Backup</string>
     <string name="lbl_off_restore">Offline Restore</string>
+    <string name="lbl_cust_trans_history">Customer Transaction History</string>
+
     <string name="backup_string">
         1. Only when you connect internet, backup/restore operation performed. \n
         2. We are using your google drive account to store your transaction data. \n
@@ -53,11 +57,8 @@
     <string name="version">Version\t   :   \t1.1</string>
     <string name="app_desc">This app used to maintain your day to day transactions</string>
     <string name="developer">Developed by Guna</string>
-    <string-array name="test">
-        <item>Test</item>
-        <item>test1</item>
-        <item>test2</item>
-        <item>Test3</item>
-        <item>Test4</item>
+    <string-array name="Transtype">
+        <item>Salary Pending</item>
+        <item>Received</item>
     </string-array>
 </resources>

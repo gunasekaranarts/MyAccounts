@@ -112,7 +112,7 @@
                         <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:entries="@array/test"
+                            android:entries="@array/Transtype"
                             app:hintText="@string/spr_preson"
                             android:id="@+id/spnr_Persons"
                             />
