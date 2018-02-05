@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import POJO.CustomerTransaction;
+import POJO.CustomerTransactionGroup;
 import POJO.Customers;
 import POJO.Persons;
 import POJO.SecurityProfile;
@@ -29,7 +31,7 @@ import TableData.TransactionsTableData;
  */
 
 public class MyAccountsDatabase extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "MyAccountsDatabase.db";
     public ArrayList<TransactionType> transactionTypes;
     public ArrayList<Persons> persons;
@@ -95,8 +97,8 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         if (oldVersion != newVersion) {
             db.execSQL(CreateCustomerQurey);
             db.execSQL(CreateCustTransactionsQurey);
-//            db.execSQL("DROP TABLE IF EXISTS " + SecurityTableData.SecurityTableName + ";");
-//            db.execSQL("DROP TABLE IF EXISTS " + TransactionTypeTableData.TransactionTypeTableName + ";");
+            db.execSQL("DROP TABLE IF EXISTS CustomersTableData");
+            db.execSQL("DROP TABLE IF EXISTS CustomerTransactionTableData;");
 //            db.execSQL("DROP TABLE IF EXISTS " + PersonsTableData.PersonTableName + ";");
 //            db.execSQL("DROP TABLE IF EXISTS " + TransactionsTableData.TransactionTableName + ";");
 //            onCreate(db);
@@ -278,6 +280,80 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         }
         dataBase.close();
         return transactions;
+    }
+
+    public ArrayList<CustomerTransactionGroup> getCustomersGroupTransaction(){
+        ArrayList<CustomerTransactionGroup> customerTransGroup=new ArrayList<CustomerTransactionGroup>();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query="select distinct C."+CustomersTableData.CustomerID+","
+                +CustomersTableData.CustomerName+"|| '-' || "+CustomersTableData.CustomerPlace+" as CustomerName,"+CustomersTableData.CustomerMobile
+                +", ifnull((select SUM("+CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+" and "+CustomerTransactionTableData.TransactionType+"=0),0) as Totalamt,"
+                +" ifnull((select SUM("+CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+" and "+CustomerTransactionTableData.TransactionType+"=1),0) as Revceived,"
+                +" ifnull((select SUM("+CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+" and "+CustomerTransactionTableData.TransactionType+"=0),0)- ifnull((select SUM("
+                +CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+"  and "+CustomerTransactionTableData.TransactionType+"=1),0) as PendingAmt"
+                +" FROM " + CustomersTableData.CustomerTableName +" C  left join "+ CustomerTransactionTableData.CustomerTransactionTableName +" T on C."+CustomersTableData.CustomerID+"=T."+CustomerTransactionTableData.CustomerID;
+        Cursor mCursor = sqLiteDatabase.rawQuery(query, null);
+        if (mCursor.moveToFirst()){
+            do{
+                CustomerTransactionGroup customertrans=new CustomerTransactionGroup();
+                customertrans.setCustomerID(mCursor.getInt(mCursor.getColumnIndex(CustomersTableData.CustomerID)));
+                customertrans.setCustomerName(mCursor.getString(mCursor.getColumnIndex(CustomersTableData.CustomerName)));
+                customertrans.setCustomerMobile(mCursor.getString(mCursor.getColumnIndex(CustomersTableData.CustomerMobile)));
+                customertrans.setTotalAmt(mCursor.getInt(mCursor.getColumnIndex("Totalamt")));
+                customertrans.setReceivedAmt(mCursor.getInt(mCursor.getColumnIndex("Revceived")));
+                customertrans.setPendingAmt(mCursor.getInt(mCursor.getColumnIndex("PendingAmt")));
+                customerTransGroup.add(customertrans);
+
+            }while (mCursor.moveToNext());
+            mCursor.close();
+        }
+        sqLiteDatabase.close();
+        return customerTransGroup;
+    }
+    public void InsertCustomerTransaction(CustomerTransaction transaction){
+        SQLiteDatabase dataBase = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(CustomerTransactionTableData.TransactionDate, transaction.getTransactionDate().replace("-",""));
+        values.put(CustomerTransactionTableData.TransactionType, transaction.getTransactionType());
+        values.put(CustomerTransactionTableData.TransactionDesc, transaction.getTransactionDesc());
+        values.put(CustomerTransactionTableData.TransactionAmt, transaction.getTransactionAmt());
+        values.put(CustomerTransactionTableData.CustomerID, transaction.getCustomerId());
+        dataBase.beginTransaction();
+        if(transaction.getCustomerTransactionId()==0)
+            dataBase.insert(CustomerTransactionTableData.CustomerTransactionTableName, null, values);
+        else{
+            dataBase.update(CustomerTransactionTableData.CustomerTransactionTableName,values,
+                    CustomerTransactionTableData.CustomerTransactionId+"=?",new String[] {String.valueOf(transaction.getCustomerTransactionId())});
+        }
+        dataBase.setTransactionSuccessful();
+        dataBase.endTransaction();
+        dataBase.close();
+    }
+    public ArrayList<CustomerTransaction> getCustomerTransactions(int CustomerId){
+        ArrayList<CustomerTransaction> cTransactions=new ArrayList<CustomerTransaction>();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor mCursor = sqLiteDatabase.rawQuery("SELECT * FROM " + CustomerTransactionTableData.CustomerTransactionTableName+" Where "+CustomerTransactionTableData.CustomerID+"="+CustomerId + " order by "+CustomerTransactionTableData.TransactionDate, null);
+        if (mCursor.moveToFirst()){
+            do{
+                CustomerTransaction Customertrans=new CustomerTransaction();
+                Customertrans.setCustomerTransactionId(mCursor.getInt(mCursor.getColumnIndex(CustomerTransactionTableData.CustomerTransactionId)));
+                Customertrans.setCustomerId(mCursor.getInt(mCursor.getColumnIndex(CustomerTransactionTableData.CustomerID)));
+                Customertrans.setTransactionType(mCursor.getInt(mCursor.getColumnIndex(CustomerTransactionTableData.TransactionType)));
+                Customertrans.setTransactionAmt(mCursor.getInt(mCursor.getColumnIndex(CustomerTransactionTableData.TransactionAmt)));
+                String TransDate=mCursor.getString(mCursor.getColumnIndex(CustomerTransactionTableData.TransactionDate));
+                StringBuilder transdates = new StringBuilder(TransDate);
+                transdates.insert(4,"-");
+                transdates.insert(7,"-");
+                Customertrans.setTransactionDate(transdates.toString());
+
+                cTransactions.add(Customertrans);
+
+            }while (mCursor.moveToNext());
+            mCursor.close();
+        }
+        sqLiteDatabase.close();
+        return cTransactions;
     }
     public ArrayList<Integer> getIncomeIds()
     {

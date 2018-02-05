@@ -350,6 +350,11 @@ public class MainActivity extends AppCompatActivity
                 fragment=new ManageCustomers();
                 fab.hide();
             }
+        }else if (id == R.id.nav_pending_salary) {
+        if(!(fragment instanceof ManageCustomerGroupTrans) ){
+            fragment=new ManageCustomerGroupTrans();
+            fab.hide();
+        }
         }else if (id == R.id.nav_profile) {
             if(!(fragment instanceof Profile) ){
                 fragment=new Profile();

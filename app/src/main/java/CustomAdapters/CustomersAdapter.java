@@ -29,7 +29,7 @@ import TableData.CustomersTableData;
 public class CustomersAdapter extends RecyclerView.Adapter<CustomersAdapter.ViewHolder> {
 
     ArrayList<Customers> addCustomer = new ArrayList<>();
-    String customerID, cName, Name,Mobile,Place;
+    String  cName;
     AppCompatActivity mContext;
     ProgressDialog progressDialog;
     MyAccountsDatabase mSQLHelper;

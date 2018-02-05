@@ -12,7 +12,7 @@ public class CustomerTransactionTableData implements BaseColumns {
     public static String INTEGER = " INTEGER,";
 
 
-    public static String CustomerTransactionTableName = "CustomerTransactionTableData";
+    public static String CustomerTransactionTableName = "CustomerTransaction";
     public static String CustomerTransactionId="CustomerTransactionId";
     public static String CustomerID="CustomerId";
     public static String TransactionDesc="TransactionDesc";

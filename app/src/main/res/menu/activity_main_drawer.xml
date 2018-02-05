@@ -21,6 +21,10 @@
             android:icon="@drawable/ic_menu_person"
             android:title="Manage Customers" />
         <item
+            android:id="@+id/nav_pending_salary"
+            android:icon="@drawable/ic_menu_pending"
+            android:title="Pending Salary" />
+        <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_menu_profile"
             android:title="Profile" />
