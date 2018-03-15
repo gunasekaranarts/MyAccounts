@@ -93,7 +93,6 @@ public class TransactionAdapter  extends RecyclerView.Adapter<TransactionAdapter
             @Override
             public void onClick(View v) {
                 positions=position;
-
                 final AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AppCompatAlertDialogStyle);
                 builder.setTitle("My Accounts");
                 builder.setMessage("Are you sure want to delete?" );
@@ -116,14 +115,11 @@ public class TransactionAdapter  extends RecyclerView.Adapter<TransactionAdapter
                 builder.show();
             }
         });
-
     }
-
     @Override
     public int getItemCount() {
         return transactions.size();
     }
-
 
     public class ViewHolder  extends RecyclerView.ViewHolder {
         TextView TransactionName, TransDesc,TransAmt;
