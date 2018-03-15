@@ -31,7 +31,7 @@ public class StatementAdapter extends RecyclerView.Adapter<StatementAdapter.View
     SQLiteDatabase dataBase;
     ArrayList<Integer> IncomeId,ExpenseId;
     ArrayList<TransactionType> transactionType;
-    int transactionID,positions;
+
 
     public StatementAdapter(ArrayList<Transaction> transactions, AppCompatActivity mContext,
                             ArrayList<Integer> incomeId, ArrayList<Integer> expenseId) {
@@ -71,9 +71,10 @@ public class StatementAdapter extends RecyclerView.Adapter<StatementAdapter.View
             DecimalFormat format = new DecimalFormat("0.00");
             holder.TransAmt.setText("₹"+format.format(transaction.getTransactionAmount()));
             if(IncomeId.contains(transaction.getTransactionTypeID()))
-             holder.TransAmt.setTextColor(ContextCompat.getColor(mContext,R.color.green));
+                holder.TransAmt.setTextColor(ContextCompat.getColor(mContext, R.color.green));
            else
-             holder.TransAmt.setTextColor(ContextCompat.getColor(mContext,R.color.red));
+               holder.TransAmt.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+
 
         }
 

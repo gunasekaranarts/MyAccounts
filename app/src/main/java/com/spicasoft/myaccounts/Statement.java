@@ -266,17 +266,43 @@ public class Statement extends Fragment {
         }
         transactions=new ArrayList<>();
         transactions=mSqlHelper.getTransactions(filter);
-        if(transactions.size()<=0)
-            Toast.makeText(getActivity(),"No transaction found. Please change filters.",
+        if(transactions.size()<=0) {
+            Toast.makeText(getActivity(), "No transaction found. Please change filters.",
                     Toast.LENGTH_LONG).show();
-        setTransactionAdapter();
-
+        }else {
+            setTransactionAdapter();
+        }
     }
 
     private void setTransactionAdapter() {
         statementAdapter = new StatementAdapter(transactions,(AppCompatActivity) getActivity(), IncomeId,ExpenseId);
         statementList.setAdapter(statementAdapter);
         statementAdapter.notifyDataSetChanged();
+        ShowSummaryDialog();
+    }
+
+    public void ShowSummaryDialog() {
+        DecimalFormat format = new DecimalFormat("0.00");
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_statement_summary);
+        TextView txt_tot_credit=(TextView) dialog.findViewById(R.id.txt_tot_credit);
+        TextView txt_tot_debit=(TextView) dialog.findViewById(R.id.txt_tot_debit);
+        TextView txt_col_bal=(TextView) dialog.findViewById(R.id.txt_col_bal);
+        int TotIncome=0,TotExpense=0;
+        for (Transaction transaction:
+        transactions) {
+            if(IncomeId.contains(transaction.getTransactionTypeID()))
+                TotIncome+=transaction.getTransactionAmount();
+            else
+                TotExpense+=transaction.getTransactionAmount();
+        }
+        txt_tot_credit.setText("₹"+format.format(TotIncome));
+        txt_tot_debit.setText("₹"+format.format(TotExpense));
+        txt_col_bal.setText("₹"+format.format(TotIncome-TotExpense));
+        dialog.show();
     }
 
     @Override
