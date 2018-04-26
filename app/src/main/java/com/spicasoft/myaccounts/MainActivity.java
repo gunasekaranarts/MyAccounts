@@ -350,11 +350,18 @@ public class MainActivity extends AppCompatActivity
                 fragment=new ManageCustomers();
                 fab.hide();
             }
-        }else if (id == R.id.nav_pending_salary) {
-        if(!(fragment instanceof ManageCustomerGroupTrans) ){
-            fragment=new ManageCustomerGroupTrans();
-            fab.hide();
         }
+        else if (id == R.id.nav_pending_salary) {
+            if (!(fragment instanceof ManageCustomerGroupTrans)) {
+                fragment = new ManageCustomerGroupTrans();
+                fab.hide();
+            }
+        }
+        else if (id == R.id.nav_analysis) {
+            if(!(fragment instanceof AnalysisStatistics) ){
+                fragment=new AnalysisStatistics();
+                fab.hide();
+            }
         }else if (id == R.id.nav_profile) {
             if(!(fragment instanceof Profile) ){
                 fragment=new Profile();
@@ -379,7 +386,6 @@ public class MainActivity extends AppCompatActivity
                 R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
         fragmentTransaction.replace(R.id.fragment_container,fragment);
         fragmentTransaction.commit();
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

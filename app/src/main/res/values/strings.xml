@@ -61,4 +61,13 @@
         <item>Salary Pending</item>
         <item>Received</item>
     </string-array>
+    <string name="manage_transaction">Transaction Type</string>
+    <string name="cash_flow">Cash Flow</string>
+    <string-array name="cashflow">
+        <item>Inward</item>
+        <item>Outward</item>
+    </string-array>
+    <string name="lbl_statistics">Analysis</string>
+    <string name="lbl_expense_summary">Expense Summary</string>
+    <string name="lbl_general_summary">General Summary</string>
 </resources>
