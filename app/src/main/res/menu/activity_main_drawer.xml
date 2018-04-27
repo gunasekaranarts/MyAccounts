@@ -16,6 +16,11 @@
             android:id="@+id/nav_persons"
             android:icon="@drawable/ic_menu_person"
             android:title="Manage Persons" />
+
+        <item
+            android:id="@+id/nav_managetranstype"
+            android:icon="@drawable/ic_menu_transtype"
+            android:title="Manage Transaction Types" />
         <item
             android:id="@+id/nav_customers"
             android:icon="@drawable/ic_menu_person"

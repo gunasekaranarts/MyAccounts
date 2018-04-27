@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class TransactionType implements Serializable {
     public int transactionTypeId;
     public String transactionType;
-
+    public String CashFlow;
     public int getTransactionTypeId() {
         return transactionTypeId;
     }
@@ -25,6 +25,14 @@ public class TransactionType implements Serializable {
 
     public void setTransactionType(String transactionType) {
         this.transactionType = transactionType;
+    }
+
+    public String getCashFlow() {
+        return CashFlow;
+    }
+
+    public void setCashFlow(String cashFlow) {
+        CashFlow = cashFlow;
     }
 
     @Override

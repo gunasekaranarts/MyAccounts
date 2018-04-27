@@ -7,7 +7,6 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -47,7 +46,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import CustomWidget.TextAwesome;
 import Database.MyAccountsDatabase;
 import POJO.AnalysisSummary;
 import POJO.TransactionFilter;
@@ -58,14 +56,20 @@ import POJO.TransactionFilter;
 
 public class AnalysisStatistics extends Fragment implements OnChartValueSelectedListener {
     BarChart mChartSummary,mChartExpense;
+    TextView lnk_changeKeyword;
     MyAccountsDatabase mSqlHelper;
     AnalysisSummary summary;
     AppCompatImageButton lnk_refresh;
     AppCompatButton btn_reset;
     AppCompatEditText from_date,to_date;
     TransactionFilter filter;
+
     final String[] GeneralSummary = {"Income", "", "Expense","", "Savings","","Outstanding"};
-    final String[] ExpenseSummary = {"ToHome", "", "Food","", "Rent"};
+    ArrayList<String> keywords = new ArrayList<String>() {{
+        add("home");
+        add("food");
+        add("room rent");
+    }};
     final DecimalFormat format = new DecimalFormat("##,##,##,##0.00");
     @Nullable
     @Override
@@ -77,6 +81,7 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
         from_date=(AppCompatEditText) view.findViewById(R.id.from_date);
         to_date=(AppCompatEditText) view.findViewById(R.id.to_date);
         btn_reset=(AppCompatButton) view.findViewById(R.id.btn_reset);
+        lnk_changeKeyword=(TextView)view.findViewById(R.id.lnk_changeKeyword);
         mChartSummary.setOnChartValueSelectedListener(this);
         mSqlHelper=new MyAccountsDatabase(getActivity());
         DrawSummaryChart();
@@ -128,7 +133,43 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
             public void onClick(View v) {
                 from_date.setText(null);
                 to_date.setText(null);
+                keywords= new ArrayList<String>() {{
+                    add("home");
+                    add("food");
+                    add("room rent");
+                }};
                 DrawSummaryChart();
+            }
+        });
+        lnk_changeKeyword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.setCancelable(true);
+                dialog.setContentView(R.layout.dialog_add_graph_item);
+                final AppCompatEditText txt_keyword=(AppCompatEditText) dialog.findViewById(R.id.txt_keyword);
+                Button Ok = (Button) dialog.findViewById(R.id.btn_add);
+
+                Ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(txt_keyword.getText().toString().equals("")){
+                            txt_keyword.setError("Should not be empty!!!");
+                            txt_keyword.requestFocus();
+                        }else {
+                            keywords.add(txt_keyword.getText().toString());
+                            dialog.dismiss();
+                            summary=mSqlHelper.getGraphData(filter,keywords);
+                            DrawExpenseChart();
+                        }
+
+                    }
+                });
+
+                dialog.show();
+
             }
         });
         return view;
@@ -157,17 +198,14 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
         if(!to_date.getText().toString().equals(""))
             filter.setToDate(to_date.getText().toString());
 
-        summary=mSqlHelper.getGraphData(filter);
+        summary=mSqlHelper.getGraphData(filter,keywords);
         mChartSummary.setDrawBarShadow(false);
         mChartSummary.setDrawValueAboveBar(true);
         mChartSummary.animateXY(2000,3000);
         mChartSummary.getDescription().setEnabled(false);
         mChartSummary.setMaxVisibleValueCount(20);
         mChartSummary.setPinchZoom(false);
-
         mChartSummary.setDrawGridBackground(false);
-
-        //IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChartSummary);
 
         XAxis xAxis = mChartSummary.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -176,9 +214,6 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
         xAxis.setGranularity(1f); // only intervals of 1 day
         xAxis.setLabelCount(7);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(GeneralSummary));
-
-
-
 
         YAxis leftAxis = mChartSummary.getAxisLeft();
         //leftAxis.setTypeface(mTfLight);
@@ -245,6 +280,7 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
 
     private void DrawExpenseChart()
     {
+
         mChartExpense.setDrawBarShadow(false);
         mChartExpense.setDrawValueAboveBar(true);
         mChartExpense.animateXY(2000,3000);
@@ -262,7 +298,7 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f); // only intervals of 1 day
         xAxis.setLabelCount(7);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(ExpenseSummary));
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(keywords));
 
 
 
@@ -296,9 +332,13 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
 //        l.setXEntrySpace(4f);
 
         List<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(0f, (summary.getHome()/(float)1000)));
-        entries.add(new BarEntry(2f, (summary.getFood()/(float)1000)));
-        entries.add(new BarEntry(4f, (summary.getRoomRent()/(float)1000)));
+        ArrayList<Integer> values=summary.getKeywords();
+        for(int i=0;i<values.size();i++){
+            entries.add(new BarEntry((float)i, (values.get(i)/(float)1000)));
+        }
+//        entries.add(new BarEntry(0f, (summary.getKeyword1()/(float)1000)));
+//        entries.add(new BarEntry(2f, (summary.getKeyword3()/(float)1000)));
+//        entries.add(new BarEntry(4f, (summary.getKeyword2()/(float)1000)));
         //entries.add(new BarEntry(6f, (summary.getCredit()/(float)1000)));
 
 
@@ -312,7 +352,7 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
             }
         });
         BarData data = new BarData(set);
-        data.setBarWidth(0.7f); // set custom bar width
+        data.setBarWidth(0.3f); // set custom bar width
         mChartExpense.setData(data);
         mChartExpense.setFitBars(true); // make the x-axis fit exactly all bars
         mChartExpense.invalidate();

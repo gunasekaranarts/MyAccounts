@@ -6,10 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import POJO.AnalysisSummary;
 import POJO.CustomerTransaction;
@@ -113,6 +110,17 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         }
 
     }
+    public void SaveorUpdateTransype(TransactionType transactionType) {
+        SQLiteDatabase dataBase = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TransactionTypeTableData.TransactionTypeName, transactionType.getTransactionType());
+        values.put(TransactionTypeTableData.CashFlow, transactionType.getCashFlow());
+        if(transactionType.getTransactionTypeId()==0)
+        dataBase.insert(TransactionTypeTableData.TransactionTypeTableName, null, values);
+        else
+            dataBase.update(TransactionTypeTableData.TransactionTypeTableName,values,TransactionTypeTableData.TransactionTypeID+"=?",new String[] {String.valueOf(transactionType.getTransactionTypeId())});
+        dataBase.close();
+    }
     public ArrayList<TransactionType> getTransactionTypes(){
         transactionTypes=new ArrayList<TransactionType>();
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
@@ -122,6 +130,7 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
                 TransactionType transactionType=new TransactionType();
                 transactionType.setTransactionTypeId(mCursor.getInt(mCursor.getColumnIndex(TransactionTypeTableData.TransactionTypeID)));
                 transactionType.setTransactionType(mCursor.getString(mCursor.getColumnIndex(TransactionTypeTableData.TransactionTypeName)));
+                transactionType.setCashFlow(mCursor.getString(mCursor.getColumnIndex(TransactionTypeTableData.CashFlow)));
                 transactionTypes.add(transactionType);
 
             }while (mCursor.moveToNext());
@@ -364,7 +373,7 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         sqLiteDatabase.close();
         return cTransactions;
     }
-    public AnalysisSummary getGraphData(TransactionFilter filter){
+    public AnalysisSummary getGraphData(TransactionFilter filter,ArrayList<String> keywords){
         AnalysisSummary summary=new AnalysisSummary();
         SQLiteDatabase dataBase = this.getReadableDatabase();
 
@@ -374,6 +383,7 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         if(filter.getToDate()!=null)
             condition+=" and "+TransactionsTableData.TransactionDate+"<='"+filter.getToDate().replace("-","")+"'";
         int Income=0,Expense=0,tosavings=0,fromsavings=0, creditgiven=0,creditreturn=0;
+        ArrayList<Integer> ListValues=new ArrayList<>();
         Cursor mCursor = dataBase.rawQuery("SELECT SUM("+TransactionsTableData.TransactionAmount+") FROM " + TransactionsTableData.TransactionTableName +" where "+TransactionsTableData.TransactionTypeID +" = 1 "+condition, null);
         if (mCursor.moveToFirst()){
             do{
@@ -416,27 +426,19 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
             }while (mCursor.moveToNext());
             mCursor.close();
         }
-        mCursor = dataBase.rawQuery("SELECT SUM("+TransactionsTableData.TransactionAmount+") FROM " + TransactionsTableData.TransactionTableName +" where ("+TransactionsTableData.TransactionName +" like '%home%' or  "+TransactionsTableData.TransactionName +" like '%petrole%') "+condition, null);
-        if (mCursor.moveToFirst()){
-            do{
-                summary.setHome(mCursor.getInt(0));
-            }while (mCursor.moveToNext());
-            mCursor.close();
+        for (String keyword:
+             keywords) {
+            mCursor = dataBase.rawQuery("SELECT SUM("+TransactionsTableData.TransactionAmount+") FROM " + TransactionsTableData.TransactionTableName +" where "+TransactionsTableData.TransactionName +" like '%"+keyword+"%' "+condition, null);
+            if (mCursor.moveToFirst()){
+                do{
+                    ListValues.add(mCursor.getInt(0));
+                }while (mCursor.moveToNext());
+                mCursor.close();
+            }
         }
-        mCursor = dataBase.rawQuery("SELECT SUM("+TransactionsTableData.TransactionAmount+") FROM " + TransactionsTableData.TransactionTableName +" where "+TransactionsTableData.TransactionName +" like '%room rent%' "+condition, null);
-        if (mCursor.moveToFirst()){
-            do{
-                summary.setRoomRent(mCursor.getInt(0));
-            }while (mCursor.moveToNext());
-            mCursor.close();
-        }
-        mCursor = dataBase.rawQuery("SELECT SUM("+TransactionsTableData.TransactionAmount+") FROM " + TransactionsTableData.TransactionTableName +" where "+TransactionsTableData.TransactionName +" like '%food%' "+condition, null);
-        if (mCursor.moveToFirst()){
-            do{
-                summary.setFood(mCursor.getInt(0));
-            }while (mCursor.moveToNext());
-            mCursor.close();
-        }
+        summary.setKeywords(ListValues);
+
+
         dataBase.close();
         summary.setIncome(Income);
         summary.setExpense(Expense);
@@ -447,19 +449,27 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
     public ArrayList<Integer> getIncomeIds()
     {
         IncomeId=new ArrayList<Integer>();
-        IncomeId.add(1);
-        IncomeId.add(5);
-        IncomeId.add(6);
-        IncomeId.add(8);
+        SQLiteDatabase dataBase = this.getReadableDatabase();
+        Cursor mCursor = dataBase.rawQuery("SELECT "+TransactionTypeTableData.TransactionTypeID+" FROM " + TransactionTypeTableData.TransactionTypeTableName +" where "+TransactionTypeTableData.CashFlow +" = 'Inward' ", null);
+        if (mCursor.moveToFirst()){
+            do{
+                IncomeId.add(mCursor.getInt(0));
+            }while (mCursor.moveToNext());
+            mCursor.close();
+        }
         return IncomeId;
     }
     public ArrayList<Integer> getExpenseIds()
     {
         ExpenseId=new ArrayList<>();
-        ExpenseId.add(2);
-        ExpenseId.add(3);
-        ExpenseId.add(4);
-        ExpenseId.add(7);
+        SQLiteDatabase dataBase = this.getReadableDatabase();
+        Cursor mCursor = dataBase.rawQuery("SELECT "+TransactionTypeTableData.TransactionTypeID+" FROM " + TransactionTypeTableData.TransactionTypeTableName +" where "+TransactionTypeTableData.CashFlow +" = 'Outward' ", null);
+        if (mCursor.moveToFirst()){
+            do{
+                ExpenseId.add(mCursor.getInt(0));
+            }while (mCursor.moveToNext());
+            mCursor.close();
+        }
         return ExpenseId;
     }
 

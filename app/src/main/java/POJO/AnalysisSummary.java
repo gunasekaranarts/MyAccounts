@@ -1,6 +1,8 @@
 package POJO;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by USER on 26-04-2018.
@@ -11,9 +13,10 @@ public class AnalysisSummary implements Serializable {
     public int Expense;
     public int Saving;
     public int Credit;
-    public int Home;
-    public int RoomRent;
-    public int Food;
+    public int keyword1;
+    public int keyword2;
+    public int keyword3;
+    public ArrayList<Integer> keywords;
 
     public int getIncome() {
         return Income;
@@ -47,27 +50,35 @@ public class AnalysisSummary implements Serializable {
         Credit = credit;
     }
 
-    public int getHome() {
-        return Home;
+    public int getKeyword1() {
+        return keyword1;
     }
 
-    public void setHome(int home) {
-        Home = home;
+    public void setKeyword1(int keyword1) {
+        this.keyword1 = keyword1;
     }
 
-    public int getRoomRent() {
-        return RoomRent;
+    public int getKeyword2() {
+        return keyword2;
     }
 
-    public void setRoomRent(int roomRent) {
-        RoomRent = roomRent;
+    public void setKeyword2(int keyword2) {
+        this.keyword2 = keyword2;
     }
 
-    public int getFood() {
-        return Food;
+    public int getKeyword3() {
+        return keyword3;
     }
 
-    public void setFood(int food) {
-        Food = food;
+    public void setKeyword3(int keyword3) {
+        this.keyword3 = keyword3;
+    }
+
+    public ArrayList<Integer> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(ArrayList<Integer> keywords) {
+        this.keywords = keywords;
     }
 }
