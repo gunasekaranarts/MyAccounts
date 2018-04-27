@@ -16,6 +16,11 @@
             android:id="@+id/nav_persons"
             android:icon="@drawable/ic_menu_person"
             android:title="Manage Persons" />
+
+        <item
+            android:id="@+id/nav_managetranstype"
+            android:icon="@drawable/ic_menu_transtype"
+            android:title="Manage Transaction Types" />
         <item
             android:id="@+id/nav_customers"
             android:icon="@drawable/ic_menu_person"
@@ -24,6 +29,10 @@
             android:id="@+id/nav_pending_salary"
             android:icon="@drawable/ic_menu_pending"
             android:title="Pending Salary" />
+        <item
+            android:id="@+id/nav_analysis"
+            android:icon="@drawable/ic_menu_analysis"
+            android:title="Analysis Data" />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_menu_profile"

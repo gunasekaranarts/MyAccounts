@@ -314,7 +314,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the keyword1/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
@@ -345,16 +345,28 @@ public class MainActivity extends AppCompatActivity
                 fragment=new ManagePersons();
                 fab.hide();
             }
+        }else if (id == R.id.nav_managetranstype) {
+            if(!(fragment instanceof Transaction_Type) ){
+                fragment=new Transaction_Type();
+                fab.hide();
+            }
         }else if (id == R.id.nav_customers) {
             if(!(fragment instanceof ManageCustomers) ){
                 fragment=new ManageCustomers();
                 fab.hide();
             }
-        }else if (id == R.id.nav_pending_salary) {
-        if(!(fragment instanceof ManageCustomerGroupTrans) ){
-            fragment=new ManageCustomerGroupTrans();
-            fab.hide();
         }
+        else if (id == R.id.nav_pending_salary) {
+            if (!(fragment instanceof ManageCustomerGroupTrans)) {
+                fragment = new ManageCustomerGroupTrans();
+                fab.hide();
+            }
+        }
+        else if (id == R.id.nav_analysis) {
+            if(!(fragment instanceof AnalysisStatistics) ){
+                fragment=new AnalysisStatistics();
+                fab.hide();
+            }
         }else if (id == R.id.nav_profile) {
             if(!(fragment instanceof Profile) ){
                 fragment=new Profile();
@@ -379,7 +391,6 @@ public class MainActivity extends AppCompatActivity
                 R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
         fragmentTransaction.replace(R.id.fragment_container,fragment);
         fragmentTransaction.commit();
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

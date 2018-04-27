@@ -15,6 +15,7 @@ public class TransactionTypeTableData implements BaseColumns {
     public static String TransactionTypeTableName = "TransactionType";
     public static String TransactionTypeID="TransactionTypeId";
     public static String TransactionTypeName="TransactionTypeName";
+    public static String CashFlow="CashFlow";
 
 }
 

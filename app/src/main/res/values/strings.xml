@@ -14,6 +14,8 @@
     <string name="spr_preson">Select Person</string>
     <string name="spr_customer">Select Customer</string>
     <string name="trans_Amt">Amount</string>
+    <string name="lbl_cashflow">Cash Flow</string>
+    <string name="lbl_select_cashflow">Select Cash Flow</string>
     <string name="setup_profile">Set your profile</string>
     <string name="profile_name">Name</string>
     <string name="profile_email">Email</string>
@@ -27,6 +29,7 @@
     <string name="lbl_go">Go</string>
     <string name="forgot_password">Forgot pin?</string>
     <string name="lbl_person">Person Name</string>
+    <string name="lbl_transaction_typename">Transaction Type Name</string>
     <string name="lbl_customer">Customer Name</string>
     <string name="lbl_mobile">Mobile No</string>
     <string name="lbl_customer_place">Place</string>
@@ -61,4 +64,14 @@
         <item>Salary Pending</item>
         <item>Received</item>
     </string-array>
+    <string name="manage_transaction">Transaction Type</string>
+    <string name="cash_flow">Cash Flow</string>
+    <string-array name="cashflow">
+        <item>Inward</item>
+        <item>Outward</item>
+    </string-array>
+    <string name="lbl_statistics">Analysis</string>
+    <string name="lbl_expense_summary">Custom Summary</string>
+    <string name="lbl_general_summary">General Summary</string>
+    <string name="lbl_transaction_summary">Transaction wise Summary</string>
 </resources>
