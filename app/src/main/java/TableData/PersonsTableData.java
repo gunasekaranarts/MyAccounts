@@ -7,9 +7,7 @@ import android.provider.BaseColumns;
  */
 
 public class PersonsTableData implements BaseColumns {
-    public static String ID_AUTOINCREMENT = " INTEGER PRIMARY KEY AUTOINCREMENT, ";
-    public static String TEXT = " TEXT,";
-    public static String INTEGER = " INTEGER,";
+
 
 
     public static String PersonTableName = "Persons";

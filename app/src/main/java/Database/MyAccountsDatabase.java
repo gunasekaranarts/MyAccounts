@@ -21,6 +21,7 @@ import TableData.CustomerTransactionTableData;
 import TableData.CustomersTableData;
 import TableData.PersonsTableData;
 import TableData.SecurityTableData;
+import TableData.TableDesign;
 import TableData.TransactionTypeTableData;
 import TableData.TransactionsTableData;
 
@@ -29,7 +30,7 @@ import TableData.TransactionsTableData;
  */
 
 public class MyAccountsDatabase extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "MyAccountsDatabase.db";
     public ArrayList<TransactionType> transactionTypes;
     public ArrayList<Persons> persons;
@@ -38,25 +39,25 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
     public String databasePath = "";
     ArrayList<Integer> IncomeId,ExpenseId;
     Context context;
-    String CreateSecurityQurey = "Create Table " + SecurityTableData.SecurityTableName + " ("+ SecurityTableData.ProfileId + SecurityTableData.ID_AUTOINCREMENT + SecurityTableData.Name + SecurityTableData.TEXT+
-            SecurityTableData.Password + SecurityTableData.TEXT + SecurityTableData.Email + SecurityTableData.TEXT +
+    String CreateSecurityQurey = "Create Table " + SecurityTableData.SecurityTableName + " ("+ SecurityTableData.ProfileId + TableDesign.ID_AUTOINCREMENT + SecurityTableData.Name + TableDesign.TEXT+
+            SecurityTableData.Password + TableDesign.TEXT + SecurityTableData.Email + TableDesign.TEXT +
             SecurityTableData.Mobile + " TEXT);";
 
-    String CreateTransactionTypeQurey = "Create Table " + TransactionTypeTableData.TransactionTypeTableName + " (" + TransactionTypeTableData.TransactionTypeID + TransactionTypeTableData.ID_AUTOINCREMENT+
-            TransactionTypeTableData.TransactionTypeName +" TEXT);";
+    String CreateTransactionTypeQurey = "Create Table " + TransactionTypeTableData.TransactionTypeTableName + " (" + TransactionTypeTableData.TransactionTypeID + TableDesign.ID_AUTOINCREMENT+
+            TransactionTypeTableData.TransactionTypeName+ TableDesign.TEXT+ TransactionTypeTableData.CashFlow+" TEXT);";
 
-    String CreatePersionsQuery="Create Table "+ PersonsTableData.PersonTableName+" ("+ PersonsTableData.PersonID + PersonsTableData.ID_AUTOINCREMENT+
-            PersonsTableData.PersonName + PersonsTableData.TEXT+PersonsTableData.PersonMobile + " TEXT);";
+    String CreatePersionsQuery="Create Table "+ PersonsTableData.PersonTableName+" ("+ PersonsTableData.PersonID + TableDesign.ID_AUTOINCREMENT+
+            PersonsTableData.PersonName + TableDesign.TEXT+PersonsTableData.PersonMobile + " TEXT);";
 
-    String CreateTransactionsQurey = "Create Table " + TransactionsTableData.TransactionTableName + " (" + TransactionsTableData.TransactionID + TransactionsTableData.ID_AUTOINCREMENT+
-            TransactionsTableData.TransactionTypeID + TransactionsTableData.INTEGER + TransactionsTableData.TransactionName + TransactionsTableData.TEXT + TransactionsTableData.TransactionDesc+ TransactionsTableData.TEXT+
-            TransactionsTableData.TransactionAmount+TransactionsTableData.INTEGER+
-            TransactionsTableData.TransactionDate+ TransactionsTableData.TEXT+ TransactionsTableData.TransactionPersonID +" INTEGER);";
-    String CreateCustomerQurey = "Create Table " + CustomersTableData.CustomerTableName + " ("+ CustomersTableData.CustomerID + CustomersTableData.ID_AUTOINCREMENT + CustomersTableData.CustomerName + CustomersTableData.TEXT+
-            CustomersTableData.CustomerMobile + CustomersTableData.TEXT + CustomersTableData.CustomerPlace +" TEXT);";
-    String CreateCustTransactionsQurey = "Create Table " + CustomerTransactionTableData.CustomerTransactionTableName + " (" + CustomerTransactionTableData.CustomerTransactionId + CustomerTransactionTableData.ID_AUTOINCREMENT+
-            CustomerTransactionTableData.TransactionType + CustomerTransactionTableData.INTEGER + CustomerTransactionTableData.TransactionDesc + CustomerTransactionTableData.TEXT + CustomerTransactionTableData.CustomerID+ CustomerTransactionTableData.INTEGER+
-            CustomerTransactionTableData.TransactionAmt+TransactionsTableData.INTEGER+
+    String CreateTransactionsQurey = "Create Table " + TransactionsTableData.TransactionTableName + " (" + TransactionsTableData.TransactionID + TableDesign.ID_AUTOINCREMENT+
+            TransactionsTableData.TransactionTypeID + TableDesign.INTEGER + TransactionsTableData.TransactionName + TableDesign.TEXT + TransactionsTableData.TransactionDesc+ TableDesign.TEXT+
+            TransactionsTableData.TransactionAmount+TableDesign.INTEGER+
+            TransactionsTableData.TransactionDate+ TableDesign.TEXT+ TransactionsTableData.TransactionPersonID +" INTEGER);";
+    String CreateCustomerQurey = "Create Table " + CustomersTableData.CustomerTableName + " ("+ CustomersTableData.CustomerID + TableDesign.ID_AUTOINCREMENT + CustomersTableData.CustomerName + TableDesign.TEXT+
+            CustomersTableData.CustomerMobile + TableDesign.TEXT + CustomersTableData.CustomerPlace +" TEXT);";
+    String CreateCustTransactionsQurey = "Create Table " + CustomerTransactionTableData.CustomerTransactionTableName + " (" + CustomerTransactionTableData.CustomerTransactionId + TableDesign.ID_AUTOINCREMENT+
+            CustomerTransactionTableData.TransactionType + TableDesign.INTEGER + CustomerTransactionTableData.TransactionDesc + TableDesign.TEXT + CustomerTransactionTableData.CustomerID+ TableDesign.INTEGER+
+            CustomerTransactionTableData.TransactionAmt+TableDesign.INTEGER+
             CustomerTransactionTableData.TransactionDate+" TEXT);";
 
     public MyAccountsDatabase(Context context) {
@@ -89,6 +90,7 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         db.insert(TransactionTypeTableData.TransactionTypeTableName,null,contentValues);
         contentValues.put(TransactionTypeTableData.TransactionTypeName,"From Savings");
         db.insert(TransactionTypeTableData.TransactionTypeTableName,null,contentValues);
+
     }
 
     @Override
@@ -98,7 +100,7 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
                 db.execSQL(CreateCustomerQurey);
                 db.execSQL(CreateCustTransactionsQurey);
             }
-            if (oldVersion < 5) {
+            if (oldVersion < 4) {
                 db.execSQL("Alter table " + TransactionTypeTableData.TransactionTypeTableName + " ADD COLUMN " + TransactionTypeTableData.CashFlow + " TEXT");
                 db.execSQL("Update " + TransactionTypeTableData.TransactionTypeTableName + " set " + TransactionTypeTableData.CashFlow + "='Inward' where " + TransactionTypeTableData.TransactionTypeID + " in (1,5,6,8)");
                 db.execSQL("Update " + TransactionTypeTableData.TransactionTypeTableName + " set " + TransactionTypeTableData.CashFlow + "='Outward' where " + TransactionTypeTableData.TransactionTypeID + " in (2,3,4,7)");

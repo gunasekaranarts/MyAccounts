@@ -14,6 +14,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class Change_Password extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.security_profile, container, false);
+
         layout_profile=(LinearLayout)view.findViewById(R.id.layout_profile);
         layout_profile.setVisibility(View.GONE);
         profile_title=(TextView)view.findViewById(R.id.profile_Title);
