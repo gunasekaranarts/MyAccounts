@@ -178,8 +178,9 @@ public class AddTransaction extends Fragment {
             setPersonAdapter();
             selectedPerson=Persons.getItemById(persons,transaction.getTransactionPersonID());
             if(selectedPerson!=null) {
-                int pos=PersonAdapter.getPosition(selectedPerson);
-                transPerson.setSelection(pos);
+                transPerson.setVisibility(View.VISIBLE);
+               // int pos=PersonAdapter.getPosition(selectedPerson);
+              //  transPerson.setSelection(pos);
 
             }
         }else{
@@ -286,12 +287,13 @@ public class AddTransaction extends Fragment {
         dialog.show();
 
     }
-
-
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if(TransactionId!=0 && selectedPerson!=null) {
+            int pos=PersonAdapter.getPosition(selectedPerson);
+            transPerson.setSelection(pos,false);
+        }
     }
 
 

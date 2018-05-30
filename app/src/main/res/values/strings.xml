@@ -47,7 +47,7 @@
     <string name="lbl_off_backup">Offline Backup</string>
     <string name="lbl_off_restore">Offline Restore</string>
     <string name="lbl_cust_trans_history">Customer Transaction History</string>
-    <string name="lbl_statement_summary">Statement Summary</string>
+    <string name="lbl_statement_summary">Summary/மொத்த பரிவர்த்தனை</string>
     <string name="backup_string">
         1. Only when you connect internet, backup/restore operation performed. \n
         2. We are using your google drive account to store your transaction data. \n
@@ -57,7 +57,7 @@
     </string>
     <string name="Title">My Accounts App</string>
     <string name="app">App Name \t: \tMy Accounts</string>
-    <string name="version">Version\t   :   \t1.1</string>
+    <string name="version">Version\t   :   \t1.5</string>
     <string name="app_desc">This app used to maintain your day to day transactions</string>
     <string name="developer">Developed by Guna</string>
     <string-array name="Transtype">
@@ -74,4 +74,6 @@
     <string name="lbl_expense_summary">Custom Summary</string>
     <string name="lbl_general_summary">General Summary</string>
     <string name="lbl_transaction_summary">Transaction wise Summary</string>
+    <string name="lbl_tot_credit">Total Credits/மொத்த வரவு :</string>
+    <string name="lbl_tot_debit">Total Debits/மொத்த செலவு :</string>
 </resources>

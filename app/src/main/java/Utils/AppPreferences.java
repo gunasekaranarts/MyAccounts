@@ -3,13 +3,18 @@ package Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+
 /**
  * Created by USER on 27-11-2017.
  */
 
-public class AppPreferences { public static final String SEFPRO_PREFERENCE = "NEXTEPPreference";
+public class AppPreferences {
+
+    public static final String SEFPRO_PREFERENCE = "MyAccountsPreference";
 
     private static final String DRIVE_ID = "DriveId";
+    private static final String DefaultKeywords = "DefaultKeywords";
 
     private static AppPreferences appPreferences = null;
     private SharedPreferences sharedPreferences;
@@ -41,7 +46,11 @@ public class AppPreferences { public static final String SEFPRO_PREFERENCE = "NE
         prefEditor.commit();
     }
 
-
-
-
+    public String getDefaultKeywords() {
+        return sharedPreferences.getString(DefaultKeywords, "");
+    }
+    public void setDefaultKeywords(String keywords) {
+        prefEditor.putString(DefaultKeywords, keywords);
+        prefEditor.commit();
+    }
 }

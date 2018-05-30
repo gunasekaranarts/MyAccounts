@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:elevation="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/lbl_statement_summary"
-            android:textSize="20dp" />
+            android:textSize="17dp" />
 
     </LinearLayout>
     <View
@@ -43,30 +43,39 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="5"
                 android:layout_marginLeft="5dp"
-                android:text="Total Credits: "
+                android:text="@string/lbl_tot_credit"
                 />
             <TextView
                 android:id="@+id/txt_tot_credit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="5"
                 android:text="100.00 "
                 />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Total Debits: "
-                />
-            <TextView
-                android:id="@+id/txt_tot_debit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="100.00 "
-                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:weightSum="10"
+            >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:layout_marginLeft="5dp"
+            android:text="@string/lbl_tot_debit"
+            />
+        <TextView
+            android:id="@+id/txt_tot_debit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="100.00 "
+            />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,8 +88,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
-                android:gravity="center"
-                android:text="Closing Balance:"
+                android:layout_marginLeft="5dp"
+                android:text="Closing Balance/கையிருப்பு :"
                 />
             <TextView
                 android:id="@+id/txt_col_bal"

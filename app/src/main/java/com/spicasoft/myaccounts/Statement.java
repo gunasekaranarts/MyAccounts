@@ -195,7 +195,7 @@ public class Statement extends Fragment {
 
             @Override
             public void onClick(View v) {
-                showAlertFileType("Do you want to save this report as ?" ,1);
+                showAlertFileType("Do you want to share this report as ?" ,1);
             }
         });
         return view;
@@ -464,7 +464,7 @@ public class Statement extends Fragment {
                 thks.setFont(greenFont);
                 document.add(thks);
                 document.close();
-                Toast.makeText(getActivity(), "Data Exported in a PDF file", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Data Exported as a PDF file at - "+file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 if(is_Share)
                 {
                     if(file.exists())
@@ -511,7 +511,7 @@ public class Statement extends Fragment {
 
         table.setHeaderRows(1);
         DecimalFormat format = new DecimalFormat("0.00");
-        tot_debit=tot_credit=0;
+        tot_debit=tot_credit=tot_income=tot_savings=0;
         for (Transaction t:
              transactions) {
             c1 = new PdfPCell(new Phrase(t.getTransactionDate()));
@@ -608,7 +608,7 @@ public class Statement extends Fragment {
     private void SaveExcel(Boolean is_Share) {
         {
             SearchTransactions();
-            tot_debit=tot_credit=0;
+            tot_debit=tot_credit=tot_income=tot_savings=0;
             if(transactions.size()>0){
                 File myDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/My Accounts/");
                 if (!myDir.exists()) {
@@ -691,7 +691,7 @@ public class Statement extends Fragment {
                             transactions.size()+6, ("₹" + format.format(tot_credit-tot_debit))));
                     workbook.write();
                     workbook.close();
-                    Toast.makeText(getActivity(), "Data Exported in a Excel Sheet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Data Exported as a Excel Sheet at - "+file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     if(is_Share)
                     {
                         if(file.exists())

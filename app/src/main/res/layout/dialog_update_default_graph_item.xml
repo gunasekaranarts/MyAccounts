@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
@@ -20,7 +20,7 @@
             android:id="@+id/dialog_history_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Keyword To Create Bar"
+            android:text="Update Graph Default Keywords"
             android:textSize="20dp" />
 
     </LinearLayout>
@@ -34,23 +34,32 @@
         android:layout_marginLeft="5dp"
         android:orientation="vertical"
         >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="By adding keyword it creates a bar with the transaction that matches with the given keyword."
-            />
+
 
         <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/txt_keyword"
+            android:id="@+id/txt_keyword1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Keyword eg: recharge"
             />
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/txt_keyword2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Keyword eg: petrole"
+            />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/txt_keyword3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Keyword eg: food"
+            />
         <Button
-            android:id="@+id/btn_add"
+            android:id="@+id/btn_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add"
+            android:text="Update"
             android:textColor="@color/white"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"

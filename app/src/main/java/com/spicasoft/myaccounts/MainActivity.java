@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE); // To prevent to take screenshot or record
         setContentView(R.layout.activity_main);
         //initializeDriveClient(GoogleSignIn.getLastSignedInAccount(getApplicationContext()));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -41,6 +41,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +50,7 @@ import java.util.Locale;
 import Database.MyAccountsDatabase;
 import POJO.AnalysisSummary;
 import POJO.TransactionFilter;
+import Utils.AppPreferences;
 
 /**
  * Created by USER on 25-04-2018.
@@ -56,7 +58,7 @@ import POJO.TransactionFilter;
 
 public class AnalysisStatistics extends Fragment implements OnChartValueSelectedListener {
     BarChart mChartSummary,mChartExpense;
-    TextView lnk_changeKeyword;
+    TextView Add_Keyword,update_default_keyword;
     MyAccountsDatabase mSqlHelper;
     AnalysisSummary summary;
     AppCompatImageButton lnk_refresh;
@@ -65,11 +67,7 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
     TransactionFilter filter;
 
     final String[] GeneralSummary = {"Income", "", "Expense","", "Savings","","Outstanding"};
-    ArrayList<String> keywords = new ArrayList<String>() {{
-        add("home");
-        add("food");
-        add("room rent");
-    }};
+    ArrayList<String> keywords ;
     final DecimalFormat format = new DecimalFormat("##,##,##,##0.00");
     @Nullable
     @Override
@@ -81,10 +79,18 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
         from_date=(AppCompatEditText) view.findViewById(R.id.from_date);
         to_date=(AppCompatEditText) view.findViewById(R.id.to_date);
         btn_reset=(AppCompatButton) view.findViewById(R.id.btn_reset);
-        lnk_changeKeyword=(TextView)view.findViewById(R.id.lnk_changeKeyword);
+        Add_Keyword=(TextView)view.findViewById(R.id.Add_Keyword);
+        update_default_keyword=(TextView)view.findViewById(R.id.update_default_keyword);
         mChartSummary.setOnChartValueSelectedListener(this);
         mSqlHelper=new MyAccountsDatabase(getActivity());
+        if(AppPreferences.getInstance(getContext()).getDefaultKeywords().equals(""))
+        {
+            AppPreferences.getInstance(getContext()).setDefaultKeywords("home?food?room rent");
+        }
+        keywords = new ArrayList<String>(Arrays.asList(AppPreferences.getInstance(getContext()).getDefaultKeywords().split("\\?")));
         DrawSummaryChart();
+
+
         from_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,15 +139,11 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
             public void onClick(View v) {
                 from_date.setText(null);
                 to_date.setText(null);
-                keywords= new ArrayList<String>() {{
-                    add("home");
-                    add("food");
-                    add("room rent");
-                }};
+                keywords= new ArrayList<String>(Arrays.asList(AppPreferences.getInstance(getContext()).getDefaultKeywords().split("\\?")));
                 DrawSummaryChart();
             }
         });
-        lnk_changeKeyword.setOnClickListener(new View.OnClickListener() {
+        Add_Keyword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Dialog dialog = new Dialog(getActivity());
@@ -160,6 +162,53 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
                             txt_keyword.requestFocus();
                         }else {
                             keywords.add(txt_keyword.getText().toString());
+                            dialog.dismiss();
+                            summary=mSqlHelper.getGraphData(filter,keywords);
+                            DrawExpenseChart();
+                        }
+
+                    }
+                });
+                dialog.show();
+            }
+        });
+
+        update_default_keyword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.setCancelable(true);
+                dialog.setContentView(R.layout.dialog_update_default_graph_item);
+                final AppCompatEditText txt_keyword1=(AppCompatEditText) dialog.findViewById(R.id.txt_keyword1);
+                final AppCompatEditText txt_keyword2=(AppCompatEditText) dialog.findViewById(R.id.txt_keyword2);
+                final AppCompatEditText txt_keyword3=(AppCompatEditText) dialog.findViewById(R.id.txt_keyword3);
+                Button Update = (Button) dialog.findViewById(R.id.btn_update);
+
+                txt_keyword1.setText(keywords.get(0));
+                txt_keyword2.setText(keywords.get(1));
+                txt_keyword3.setText(keywords.get(2));
+                Update.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(txt_keyword1.getText().toString().equals("")){
+                            txt_keyword1.setError("Should not be empty!!!");
+                            txt_keyword1.requestFocus();
+                        }else if(txt_keyword2.getText().toString().equals("")){
+                            txt_keyword2.setError("Should not be empty!!!");
+                            txt_keyword2.requestFocus();
+                        }  else if(txt_keyword3.getText().toString().equals("")){
+                            txt_keyword3.setError("Should not be empty!!!");
+                            txt_keyword3.requestFocus();
+                        }
+                        else {
+                            AppPreferences.getInstance(getContext()).setDefaultKeywords(
+                                    txt_keyword1.getText().toString()+"?"+
+                                            txt_keyword2.getText().toString()+"?"+
+                                            txt_keyword3.getText().toString()
+                            );
+                            keywords=new ArrayList<String>(Arrays.asList(AppPreferences.getInstance(getContext()).getDefaultKeywords().split("\\?")));
                             dialog.dismiss();
                             summary=mSqlHelper.getGraphData(filter,keywords);
                             DrawExpenseChart();
