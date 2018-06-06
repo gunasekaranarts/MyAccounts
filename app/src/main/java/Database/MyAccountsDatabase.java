@@ -30,7 +30,7 @@ import TableData.TransactionsTableData;
  */
 
 public class MyAccountsDatabase extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 9;
     private static final String DATABASE_NAME = "MyAccountsDatabase.db";
     public ArrayList<TransactionType> transactionTypes;
     public ArrayList<Persons> persons;
@@ -90,7 +90,9 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         db.insert(TransactionTypeTableData.TransactionTypeTableName,null,contentValues);
         contentValues.put(TransactionTypeTableData.TransactionTypeName,"From Savings");
         db.insert(TransactionTypeTableData.TransactionTypeTableName,null,contentValues);
-
+        db.execSQL("Alter table "+CustomerTransactionTableData.CustomerTransactionTableName+ " ADD COLUMN "+ CustomerTransactionTableData.AccountStatus +" TEXT");
+        db.execSQL("Alter table "+CustomerTransactionTableData.CustomerTransactionTableName+ " ADD COLUMN "+ CustomerTransactionTableData.Message +" TEXT");
+        db.execSQL("Update "+CustomerTransactionTableData.CustomerTransactionTableName+ " set "+CustomerTransactionTableData.AccountStatus+"='Active'" );
     }
 
     @Override
@@ -108,6 +110,11 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
 //            db.execSQL("DROP TABLE IF EXISTS " + PersonsTableData.PersonTableName + ";");
 //            db.execSQL("DROP TABLE IF EXISTS " + TransactionsTableData.TransactionTableName + ";");
 //            onCreate(db);
+            }
+            if(oldVersion<9){
+                db.execSQL("Alter table "+CustomerTransactionTableData.CustomerTransactionTableName+ " ADD COLUMN "+ CustomerTransactionTableData.AccountStatus +" TEXT");
+                db.execSQL("Alter table "+CustomerTransactionTableData.CustomerTransactionTableName+ " ADD COLUMN "+ CustomerTransactionTableData.Message +" TEXT");
+                db.execSQL("Update "+CustomerTransactionTableData.CustomerTransactionTableName+ " set "+CustomerTransactionTableData.AccountStatus+"='Active'" );
             }
         }
 
@@ -307,10 +314,11 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         String query="select distinct C."+CustomersTableData.CustomerID+","
                 +CustomersTableData.CustomerName+"|| '-' || "+CustomersTableData.CustomerPlace+" as CustomerName,"+CustomersTableData.CustomerMobile
-                +", ifnull((select SUM("+CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+" and "+CustomerTransactionTableData.TransactionType+"=0),0) as Totalamt,"
-                +" ifnull((select SUM("+CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+" and "+CustomerTransactionTableData.TransactionType+"=1),0) as Revceived,"
-                +" ifnull((select SUM("+CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+" and "+CustomerTransactionTableData.TransactionType+"=0),0)- ifnull((select SUM("
-                +CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+"  and "+CustomerTransactionTableData.TransactionType+"=1),0) as PendingAmt"
+                +", ifnull((select SUM("+CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+" and "+CustomerTransactionTableData.TransactionType+"=0 and "+CustomerTransactionTableData.AccountStatus+"='Active'),0) as Totalamt,"
+                +" ifnull((select SUM("+CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+" and "+CustomerTransactionTableData.TransactionType+"=1 and "+CustomerTransactionTableData.AccountStatus+"='Active'),0) as Revceived,"
+                +" ifnull((select SUM("+CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+" and "+CustomerTransactionTableData.TransactionType+"=0  and "+CustomerTransactionTableData.AccountStatus+"='Active'),0)- ifnull((select SUM("
+                +CustomerTransactionTableData.TransactionAmt+") from "+CustomerTransactionTableData.CustomerTransactionTableName+" where  "+CustomerTransactionTableData.CustomerID+"=T."+CustomersTableData.CustomerID+"  and "+CustomerTransactionTableData.TransactionType+"=1  and "+CustomerTransactionTableData.AccountStatus+"='Active'),0) as PendingAmt,"
+                +" (select "+CustomerTransactionTableData.AccountStatus +" from "+CustomerTransactionTableData.CustomerTransactionTableName+" where "+CustomerTransactionTableData.CustomerID+"=C."+CustomersTableData.CustomerID+" Order by "+CustomerTransactionTableData.CustomerTransactionId+" desc LIMIT 1) as Status "
                 +" FROM " + CustomersTableData.CustomerTableName +" C  left join "+ CustomerTransactionTableData.CustomerTransactionTableName +" T on C."+CustomersTableData.CustomerID+"=T."+CustomerTransactionTableData.CustomerID;
         Cursor mCursor = sqLiteDatabase.rawQuery(query, null);
         if (mCursor.moveToFirst()){
@@ -322,6 +330,7 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
                 customertrans.setTotalAmt(mCursor.getInt(mCursor.getColumnIndex("Totalamt")));
                 customertrans.setReceivedAmt(mCursor.getInt(mCursor.getColumnIndex("Revceived")));
                 customertrans.setPendingAmt(mCursor.getInt(mCursor.getColumnIndex("PendingAmt")));
+                customertrans.setStatus(mCursor.getString(mCursor.getColumnIndex("Status")));
                 customerTransGroup.add(customertrans);
 
             }while (mCursor.moveToNext());
@@ -339,6 +348,7 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         values.put(CustomerTransactionTableData.TransactionDesc, transaction.getTransactionDesc());
         values.put(CustomerTransactionTableData.TransactionAmt, transaction.getTransactionAmt());
         values.put(CustomerTransactionTableData.CustomerID, transaction.getCustomerId());
+        values.put(CustomerTransactionTableData.AccountStatus, "Active");
         dataBase.beginTransaction();
         if(transaction.getCustomerTransactionId()==0)
             dataBase.insert(CustomerTransactionTableData.CustomerTransactionTableName, null, values);
@@ -346,6 +356,20 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
             dataBase.update(CustomerTransactionTableData.CustomerTransactionTableName,values,
                     CustomerTransactionTableData.CustomerTransactionId+"=?",new String[] {String.valueOf(transaction.getCustomerTransactionId())});
         }
+        dataBase.setTransactionSuccessful();
+        dataBase.endTransaction();
+        dataBase.close();
+    }
+    public void CloseCustomerAcc(CustomerTransactionGroup transaction){
+        SQLiteDatabase dataBase = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(CustomerTransactionTableData.AccountStatus, "Closed");
+        dataBase.beginTransaction();
+        dataBase.execSQL("Update "+CustomerTransactionTableData.CustomerTransactionTableName+" Set "+CustomerTransactionTableData.AccountStatus+"='Closed' where "+CustomerTransactionTableData.CustomerID+"="+transaction.getCustomerID());
+        dataBase.execSQL("Update "+CustomerTransactionTableData.CustomerTransactionTableName+" Set "+CustomerTransactionTableData.Message+"= 'Closed with pending amount "+transaction.getPendingAmt()+"' where "
+                +CustomerTransactionTableData.CustomerTransactionId+"=( select "+CustomerTransactionTableData.CustomerTransactionId +" from "+CustomerTransactionTableData.CustomerTransactionTableName+" where "
+                +CustomerTransactionTableData.CustomerID+"="+transaction.getCustomerID()+" order by "+CustomerTransactionTableData.CustomerTransactionId +" desc LIMIT 1)");
         dataBase.setTransactionSuccessful();
         dataBase.endTransaction();
         dataBase.close();
@@ -366,6 +390,8 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
                 transdates.insert(4,"-");
                 transdates.insert(7,"-");
                 Customertrans.setTransactionDate(transdates.toString());
+                Customertrans.setAccountStatus(mCursor.getString(mCursor.getColumnIndex(CustomerTransactionTableData.AccountStatus)));
+                Customertrans.setMessage(mCursor.getString(mCursor.getColumnIndex(CustomerTransactionTableData.Message)));
 
                 cTransactions.add(Customertrans);
 

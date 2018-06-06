@@ -28,7 +28,7 @@
         <item
             android:id="@+id/nav_pending_salary"
             android:icon="@drawable/ic_menu_pending"
-            android:title="Pending Salary" />
+            android:title="Pending Amount" />
         <item
             android:id="@+id/nav_analysis"
             android:icon="@drawable/ic_menu_analysis"

@@ -14,6 +14,7 @@ public class CustomerTransactionGroup implements Serializable {
     public int TotalAmt;
     public int ReceivedAmt;
     public int PendingAmt;
+    public String Status;
 
     public int getCustomerID() {
         return CustomerID;
@@ -61,5 +62,13 @@ public class CustomerTransactionGroup implements Serializable {
 
     public void setPendingAmt(int pendingAmt) {
         PendingAmt = pendingAmt;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
     }
 }

@@ -26,8 +26,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginRight="5dp"
-            android:textAlignment="textEnd"
             android:text="TextView" />
+        <TextView
+            android:id="@+id/txt_hist_amt_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TextView" />
+        <CustomWidget.TextAwesome
+            android:id="@+id/btn_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fa_info_circle"
+            android:textSize="20sp"
+            android:layout_marginRight="6dp"
+            />
     </LinearLayout>
 </LinearLayout>
