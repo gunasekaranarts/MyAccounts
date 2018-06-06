@@ -3,6 +3,7 @@ package CustomAdapters;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import com.spicasoft.myaccounts.ManageCustomerGroupTrans;
 import com.spicasoft.myaccounts.R;
 
 import java.text.DecimalFormat;
@@ -75,6 +77,14 @@ public class CustomerTransactionGroupAdapter  extends RecyclerView.Adapter<Custo
         }else {
             holder.PendingAmt.setText("Pending : ₹0.00");
         }
+        if(customergroup.getStatus().equals("Active")){
+            holder.txt_acc_status.setText("Status : Active");
+            holder.txt_acc_status.setTextColor(Color.GREEN);
+        }else {
+            holder.txt_acc_status.setText("Status : Closed");
+            holder.txt_acc_status.setTextColor(Color.RED);
+            holder.btn_close.setVisibility(View.INVISIBLE);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +92,31 @@ public class CustomerTransactionGroupAdapter  extends RecyclerView.Adapter<Custo
                 ShowDialogTransHistory("Transaction History",1,customergroup);
             }
         });
-
+        holder.btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AppCompatAlertDialogStyle);
+                builder.setTitle("My Accounts");
+                builder.setMessage("Are you sure want to close?" );
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mSQLHelper.CloseCustomerAcc(customergroup);
+                        addCustomerGroupTrans=mSQLHelper.getCustomersGroupTransaction();
+                        notifyDataSetChanged();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setCancelable(false);
+                builder.show();
+            }
+        });
 
     }
     private void ShowDialogTransHistory(String Titile, final int i,CustomerTransactionGroup customergroup) {
@@ -90,6 +124,7 @@ public class CustomerTransactionGroupAdapter  extends RecyclerView.Adapter<Custo
         dialog.setTitle(Titile);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
+        dialog.getWindow().setLayout(500,200);
         DecimalFormat format = new DecimalFormat("0.00");
         dialog.setContentView(R.layout.dialog_customer_transactions);
         TextView txt_cust_name = (TextView) dialog.findViewById(R.id.txt_cust_name);
@@ -120,7 +155,7 @@ public class CustomerTransactionGroupAdapter  extends RecyclerView.Adapter<Custo
     public int getItemCount() {return addCustomerGroupTrans.size();
     }
     public class ViewHolder  extends RecyclerView.ViewHolder {
-        TextView customerName, customerMobile,TotalAmt,ReceiveAmt,PendingAmt;
+        TextView customerName, customerMobile,TotalAmt,ReceiveAmt,PendingAmt,txt_acc_status,btn_close;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -129,6 +164,8 @@ public class CustomerTransactionGroupAdapter  extends RecyclerView.Adapter<Custo
             TotalAmt=(TextView) itemView.findViewById(R.id.txt_total);
             ReceiveAmt=(TextView) itemView.findViewById(R.id.txt_received);
             PendingAmt=(TextView) itemView.findViewById(R.id.txt_remaining);
+            txt_acc_status=(TextView) itemView.findViewById(R.id.txt_acc_status);
+            btn_close=(TextView) itemView.findViewById(R.id.btn_close);
         }
     }
 }

@@ -128,7 +128,7 @@ public class ManageCustomerGroupTrans extends Fragment {
         customerTransaction=null;
     }
 
-    private void displayCustomerGroupTrans() {
+    public void displayCustomerGroupTrans() {
         addCustomersGroup=mSQLHelper.getCustomersGroupTransaction();
         cusGroupAdapter = new CustomerTransactionGroupAdapter( addCustomersGroup,(AppCompatActivity) getActivity());
         customerGroupList.setAdapter(cusGroupAdapter);

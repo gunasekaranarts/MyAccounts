@@ -17,4 +17,6 @@ public class CustomerTransactionTableData implements BaseColumns {
     public static String TransactionType="TransactionType";
     public static String TransactionAmt="TransactionAmt";
     public static String TransactionDate="TransactionDate";
+    public static String AccountStatus="AccountStatus";
+    public static String Message="Message";
 }

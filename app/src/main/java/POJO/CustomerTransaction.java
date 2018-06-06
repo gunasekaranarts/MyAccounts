@@ -13,6 +13,8 @@ public class CustomerTransaction implements Serializable {
     public int TransactionType;
     public int TransactionAmt;
     public String TransactionDate;
+    public String AccountStatus;
+    public String Message;
 
     public int getCustomerTransactionId() {
         return CustomerTransactionId;
@@ -60,5 +62,21 @@ public class CustomerTransaction implements Serializable {
 
     public void setTransactionDate(String transactionDate) {
         TransactionDate = transactionDate;
+    }
+
+    public String getAccountStatus() {
+        return AccountStatus;
+    }
+
+    public void setAccountStatus(String accountStatus) {
+        AccountStatus = accountStatus;
+    }
+
+    public String getMessage() {
+        return Message;
+    }
+
+    public void setMessage(String message) {
+        Message = message;
     }
 }

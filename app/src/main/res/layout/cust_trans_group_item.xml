@@ -47,6 +47,20 @@
                 android:layout_below="@+id/txt_customerview"
                 android:text="Total: 3000" />
             <TextView
+                android:id="@+id/btn_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_custmobileview"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/white"
+                android:clickable="true"
+                android:background="@color/colorPrimary"
+                android:padding="3dp"
+                android:text="Close Account"
+                />
+
+            <TextView
                 android:id="@+id/txt_received"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,14 +71,22 @@
 
 
             <TextView
-                android:id="@+id/txt_remaining"
+            android:id="@+id/txt_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_alignStart="@+id/txt_customerview"
+            android:layout_below="@+id/txt_received"
+            android:text="Pending: 2000" />
+
+            <TextView
+                android:id="@+id/txt_acc_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_alignStart="@+id/txt_customerview"
-                android:layout_below="@+id/txt_received"
-                android:text="Pending: 2000" />
-
+                android:layout_below="@+id/txt_remaining"
+                android:text="Account Status: Active" />
 
         </RelativeLayout>
 

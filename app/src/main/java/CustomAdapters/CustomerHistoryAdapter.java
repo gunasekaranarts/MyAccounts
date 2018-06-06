@@ -3,10 +3,12 @@ package CustomAdapters;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.spicasoft.myaccounts.R;
 
@@ -61,6 +63,21 @@ public class CustomerHistoryAdapter  extends RecyclerView.Adapter<CustomerHistor
         }else{
             holder.history_Amt.setText("₹ 0");
         }
+        holder.txt_hist_amt_status.setText(customertrans.getAccountStatus());
+        if (customertrans.getMessage() != null && !customertrans.getMessage().isEmpty() && !customertrans.getMessage().equals("null"))
+        {
+            holder.btn_info.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast toast = Toast.makeText(mContext, customertrans.getMessage(), Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+            });
+
+        }else {
+            holder.btn_info.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -69,13 +86,17 @@ public class CustomerHistoryAdapter  extends RecyclerView.Adapter<CustomerHistor
     }
 
     public class ViewHolder  extends RecyclerView.ViewHolder {
-        TextView history_date, history_desc,history_Amt;
+        TextView history_date, history_desc,history_Amt,txt_hist_amt_status;
+        CustomWidget.TextAwesome btn_info;
 
         public ViewHolder(View itemView) {
             super(itemView);
             history_date=(TextView) itemView.findViewById(R.id.txt_hist_date);
             history_desc=(TextView) itemView.findViewById(R.id.txt_hist_desc);
             history_Amt=(TextView) itemView.findViewById(R.id.txt_hist_amt);
+            txt_hist_amt_status=(TextView) itemView.findViewById(R.id.txt_hist_amt_status);
+
+            btn_info=(CustomWidget.TextAwesome) itemView.findViewById(R.id.btn_info);
 
         }
     }

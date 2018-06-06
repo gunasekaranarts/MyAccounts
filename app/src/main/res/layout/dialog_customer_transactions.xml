@@ -104,6 +104,20 @@
             android:textAlignment="center"
             android:layout_weight="1"
             android:text="Amt" />
+        <TextView
+            android:id="@+id/txt_trans_amt_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:text="Status" />
+        <TextView
+            android:id="@+id/txt_trans_status_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:text="Info" />
     </LinearLayout>
     <LinearLayout
         android:layout_marginRight="10dp"
