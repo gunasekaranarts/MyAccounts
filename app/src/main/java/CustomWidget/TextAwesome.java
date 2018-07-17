@@ -11,7 +11,7 @@ import android.widget.TextView;
  * Created by USER on 07-11-2017.
  */
 
-public class TextAwesome extends TextView {
+public class TextAwesome extends android.support.v7.widget.AppCompatTextView {
     private final static String NAME = "FONTAWESOME";
     private static LruCache<String, Typeface> sTypefaceCache = new LruCache<String, Typeface>(12);
 
