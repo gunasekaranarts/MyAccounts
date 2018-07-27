@@ -13,6 +13,7 @@ public class Customers implements Serializable {
     public String CustomerName;
     public String CustomerMobile;
     public String CustomerPlace;
+    public String Status;
 
     public int getCustomerID() {
         return CustomerID;
@@ -44,6 +45,14 @@ public class Customers implements Serializable {
 
     public void setCustomerPlace(String customerPlace) {
         CustomerPlace = customerPlace;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
     }
 
     @Override

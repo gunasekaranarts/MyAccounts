@@ -77,6 +77,8 @@ public class CustomerTransactionGroupAdapter  extends RecyclerView.Adapter<Custo
         }else {
             holder.PendingAmt.setText("Pending : ₹0.00");
         }
+        if(customergroup.getStatus()==null)
+            customergroup.setStatus("Active");
         if(customergroup.getStatus().equals("Active")){
             holder.txt_acc_status.setText("Status : Active");
             holder.txt_acc_status.setTextColor(Color.GREEN);

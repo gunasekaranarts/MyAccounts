@@ -79,7 +79,6 @@ public class CustomerHistoryAdapter  extends RecyclerView.Adapter<CustomerHistor
             holder.btn_info.setVisibility(View.INVISIBLE);
         }
     }
-
     @Override
     public int getItemCount() {
         return customerTransactions.size();

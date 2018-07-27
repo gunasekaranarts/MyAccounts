@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
 import android.view.LayoutInflater;
@@ -52,7 +53,8 @@ public class AddTransaction extends Fragment {
     public AddTransaction(){
 
     }
-    AppCompatEditText transDate,transName,transDesc,transAmt,txtName,txtMobile;
+    AppCompatEditText transDate,transAmt,txtName,txtMobile;
+    AppCompatAutoCompleteTextView transName,transDesc;
     MaterialSpinner transType;
     SearchableSpinner transPerson;
     TextAwesome lnk_back,lnk_addperson;
@@ -74,8 +76,8 @@ public class AddTransaction extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view= inflater.inflate(R.layout.add_new_transaction, container, false);
         transDate=(AppCompatEditText) view.findViewById(R.id.transdate);
-        transName=(AppCompatEditText) view.findViewById(R.id.txt_transactionName);
-        transDesc=(AppCompatEditText) view.findViewById(R.id.txt_transactionDesc);
+        transName=view.findViewById(R.id.txt_transactionName);
+        transDesc=view.findViewById(R.id.txt_transactionDesc);
         transAmt=(AppCompatEditText) view.findViewById(R.id.transamount);
         transType=(MaterialSpinner) view.findViewById(R.id.sprTransaction_Type);
         transPerson=(SearchableSpinner) view.findViewById(R.id.spnr_Persons);
@@ -107,6 +109,13 @@ public class AddTransaction extends Fragment {
                 ShowDialogTransDate("Transaction Date", 1);
             }
         });
+        ArrayAdapter<String> autoTransNameAdapter= new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, mSqlHelper.getTransactionNames());
+        transName.setThreshold(1);
+        transName.setAdapter(autoTransNameAdapter);
+
+        ArrayAdapter<String> autoTransNameDescAdapter= new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, mSqlHelper.getTransactionDesc());
+        transDesc.setThreshold(1);
+        transDesc.setAdapter(autoTransNameDescAdapter);
 
         transType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

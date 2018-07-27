@@ -113,6 +113,8 @@ public class ManageCustomerGroupTrans extends Fragment {
             customerTransaction.setTransactionType(0);
         else if(sprTransaction_Type.getSelectedItem().toString().equals("Received"))
             customerTransaction.setTransactionType(1);
+        else if(sprTransaction_Type.getSelectedItem().toString().equals("Salary Paid"))
+            customerTransaction.setTransactionType(1);
         customerTransaction.setTransactionAmt(Integer.parseInt(txt_transAmt.getText().toString()));
         mSQLHelper.InsertCustomerTransaction(customerTransaction);
         Toast.makeText(getContext(),"Transaction saved",Toast.LENGTH_SHORT).show();
