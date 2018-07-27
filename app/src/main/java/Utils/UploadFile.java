@@ -1,6 +1,7 @@
 package Utils;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
@@ -16,11 +17,18 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.spicasoft.myaccounts.MainActivity;
+import com.spicasoft.myaccounts.Profile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import Database.MyAccountsDatabase;
+import POJO.SecurityProfile;
 
 /**
  * Created by USER on 29-11-2017.
@@ -28,14 +36,28 @@ import java.io.OutputStream;
 
 public class UploadFile {
     Activity main;
-
+    File currentDB;
+    SecurityProfile profile;
     public UploadFile(Activity main) {
         this.main = main;
     }
 
     public void UploadFile()
     {
-            final File currentDB = new File("/data/data/com.spicasoft.myaccounts/databases/MyAccountsDatabase.db");
+            currentDB = new File("/data/data/com.spicasoft.myaccounts/databases/MyAccountsDatabase.db");
+            profile= new MyAccountsDatabase(main).getProfile();
+            Date today= Calendar.getInstance().getTime();
+            SimpleDateFormat formater=new SimpleDateFormat("yyyyMMdd");
+            int date=Integer.parseInt(formater.format(today));
+        if(AppPreferences.getInstance(main).getLastBackUp().equals("")) {
+                AppPreferences.getInstance(main).setLastBackUp(formater.format(today));
+                new SendFile().execute();
+        }else{
+            int lastdate=Integer.parseInt(AppPreferences.getInstance(main).getLastBackUp());
+            if(lastdate<date){
+                new SendFile().execute();
+            }
+        }
             if (currentDB.exists()) {
                 deleteFileFromDrive();
 
@@ -128,4 +150,32 @@ public class UploadFile {
     protected void showMessage(String message) {
         Toast.makeText(main, message, Toast.LENGTH_LONG).show();
     }
+
+
+    private class SendFile extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                GMailSender gMailSender=new GMailSender();
+
+                gMailSender.sendBackUpMail("Backup from - "+profile.getEmail(),"Please find attached file for backup","myaccappv1@gmail.com",currentDB);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "sucess full added";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+        }
+    }
+
+
 }

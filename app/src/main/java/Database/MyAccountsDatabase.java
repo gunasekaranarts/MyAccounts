@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
+import android.os.Build;
 
 import java.util.ArrayList;
 
@@ -24,6 +26,7 @@ import TableData.SecurityTableData;
 import TableData.TableDesign;
 import TableData.TransactionTypeTableData;
 import TableData.TransactionsTableData;
+import Utils.GMailSender;
 
 /**
  * Created by USER on 08-11-2017.
@@ -32,6 +35,8 @@ import TableData.TransactionsTableData;
 public class MyAccountsDatabase extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 9;
     private static final String DATABASE_NAME = "MyAccountsDatabase.db";
+    public String Body="";
+    public String Subject="";
     public ArrayList<TransactionType> transactionTypes;
     public ArrayList<Persons> persons;
     public ArrayList<Customers> customers;
@@ -99,10 +104,31 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         db.execSQL("Alter table "+CustomerTransactionTableData.CustomerTransactionTableName+ " ADD COLUMN "+ CustomerTransactionTableData.AccountStatus +" TEXT");
         db.execSQL("Alter table "+CustomerTransactionTableData.CustomerTransactionTableName+ " ADD COLUMN "+ CustomerTransactionTableData.Message +" TEXT");
         db.execSQL("Update "+CustomerTransactionTableData.CustomerTransactionTableName+ " set "+CustomerTransactionTableData.AccountStatus+"='Active'" );
+
+        try {
+            Body="New Installation found on device: \n OS: "+ System.getProperty("os.Version")+"\n Device :"+ Build.DEVICE+"\n Model: "+Build.MODEL
+                    +"\n Brand: "+Build.BRAND+" \n Product: "+Build.PRODUCT+"\n MANUFACTURER :"+Build.MANUFACTURER
+                    +"\n Display: "+Build.DISPLAY;
+            Subject="New Installation Found";
+           new SendMail().execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        try {
+            if(this.getProfile().getEmail()!=null) {
+                Body = "Upgrade found on device: \nUser :" + this.getProfile().getEmail() + "\n OS: " + System.getProperty("os.Version") + "\n Device :" + Build.DEVICE + "\n Model: " + Build.MODEL
+                        + "\n Brand: " + Build.BRAND + " \n Product: " + Build.PRODUCT + "\n MANUFACTURER :" + Build.MANUFACTURER
+                        + "\n Display: " + Build.DISPLAY;
+                Subject="Upgrade Found";
+                new SendMail().execute();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if(oldVersion!=newVersion) {
             if (oldVersion < 2) {
                 db.execSQL(CreateCustomerQurey);
@@ -525,4 +551,56 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         return ExpenseId;
     }
 
+    public ArrayList<String> getTransactionNames(){
+        ArrayList<String> items=new ArrayList<String>();
+        SQLiteDatabase dataBase = this.getReadableDatabase();
+        Cursor mCursor = dataBase.rawQuery("SELECT distinct "+TransactionsTableData.TransactionName
+                +" FROM " + TransactionsTableData.TransactionTableName, null);
+        if (mCursor.moveToFirst()){
+            do{
+                String item=mCursor.getString(0);
+                items.add(item);
+            }while (mCursor.moveToNext());
+            mCursor.close();
+        }
+        return items;
+    }
+    public ArrayList<String> getTransactionDesc(){
+        ArrayList<String> items=new ArrayList<String>();
+        SQLiteDatabase dataBase = this.getReadableDatabase();
+        Cursor mCursor = dataBase.rawQuery("SELECT distinct "+TransactionsTableData.TransactionDesc
+                +" FROM " + TransactionsTableData.TransactionTableName, null);
+        if (mCursor.moveToFirst()){
+            do{
+                String item=mCursor.getString(0);
+                items.add(item);
+            }while (mCursor.moveToNext());
+            mCursor.close();
+        }
+        return items;
+    }
+    private class SendMail extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                GMailSender gMailSender=new GMailSender();
+
+                gMailSender.sendMail(Subject,Body,"myaccappv1@gmail.com");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "sucess full added";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+        }
+    }
 }

@@ -34,8 +34,7 @@ public class Password_Activity extends AppCompatActivity {
     SecurityProfile securityProfile;
     TextView lnkforgorpwd;
     public String teamNo;
-    private static final String username = "myaccappv1@gmail.com";
-    private static final String password = "Admin@9500";
+
     ProgressDialog progressDialog;
 
     @Override
@@ -108,11 +107,10 @@ public class Password_Activity extends AppCompatActivity {
 
     private void SendPinMail() {
         try {
-            GMailSender sender = new GMailSender(username, password);
+            GMailSender sender = new GMailSender();
             sender.sendMail("My Accounts App - Forgot pin",
                     "Dear, " +securityProfile.getName()+", \n \n " +
                             "Your pin for the app is : "+securityProfile.getPassword()+" \n\n\n Thanks \n With regards \n - Admin",
-                    username,
                     securityProfile.getEmail());
 
         } catch (Exception e) {

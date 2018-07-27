@@ -15,6 +15,7 @@ public class AppPreferences {
 
     private static final String DRIVE_ID = "DriveId";
     private static final String DefaultKeywords = "DefaultKeywords";
+    private static final String LastBackUp = "LastBackUp";
 
     private static AppPreferences appPreferences = null;
     private SharedPreferences sharedPreferences;
@@ -51,6 +52,14 @@ public class AppPreferences {
     }
     public void setDefaultKeywords(String keywords) {
         prefEditor.putString(DefaultKeywords, keywords);
+        prefEditor.commit();
+    }
+
+    public String getLastBackUp() {
+        return sharedPreferences.getString(LastBackUp, "");
+    }
+    public void setLastBackUp(String lastbackup) {
+        prefEditor.putString(LastBackUp, lastbackup);
         prefEditor.commit();
     }
 }

@@ -57,11 +57,13 @@
     </string>
     <string name="Title">My Accounts App</string>
     <string name="app">App Name \t: \tMy Accounts</string>
-    <string name="version">Version\t   :   \t1.5</string>
+    <string name="version">Version\t   :   \t2.0</string>
     <string name="app_desc">This app used to maintain your day to day transactions</string>
     <string name="developer">Developed by Guna</string>
+    <string name="developer_email">gunasekaran.arts@gmail.com</string>
     <string-array name="Transtype">
         <item>Salary Pending</item>
+        <item>Salary Paid</item>
         <item>Received</item>
     </string-array>
     <string name="manage_transaction">Transaction Type</string>
