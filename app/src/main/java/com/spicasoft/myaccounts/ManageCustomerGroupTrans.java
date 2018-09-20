@@ -78,11 +78,12 @@ public class ManageCustomerGroupTrans extends Fragment {
             @Override
             public void onClick(View v) {
                 boolean error=false;
-                if(spr_customerlist.getSelectedItemPosition()==-1){
+                if(spr_customerlist.getSelectedItemPosition()==0){
                     spr_customerlist.requestFocus();
+                    spr_customerlist.setError("You must select customer");
                     error=true;
                 }
-                if(sprTransaction_Type.getSelectedItemPosition()==-1)
+                if(sprTransaction_Type.getSelectedItemPosition()==0)
                 {
                     error=true;
                     sprTransaction_Type.requestFocus();

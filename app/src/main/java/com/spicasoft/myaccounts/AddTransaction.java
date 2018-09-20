@@ -206,7 +206,7 @@ public class AddTransaction extends Fragment {
             is_error=true;
             transDate.requestFocus();
             transDate.setError("Transaction date can't be empty!");
-        }else if(transType.getSelectedItemPosition()==-1){
+        }else if(transType.getSelectedItemPosition()==0){
             is_error=true;
             transType.requestFocus();
             transType.setError("Transaction type can't be empty!");
@@ -214,7 +214,7 @@ public class AddTransaction extends Fragment {
             is_error=true;
             transAmt.requestFocus();
             transAmt.setError("Amount can't be empty");
-        }else if(transType.getSelectedItemPosition()>=0){
+        }else if(transType.getSelectedItemPosition()>0){
 
             if(personTypeIdlist.contains(selectedTransType.getTransactionTypeId())){
                 if(transPerson.getSelectedItemPosition()==-1){
