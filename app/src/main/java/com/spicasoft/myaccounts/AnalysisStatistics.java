@@ -58,11 +58,11 @@ import Utils.AppPreferences;
 
 public class AnalysisStatistics extends Fragment implements OnChartValueSelectedListener {
     BarChart mChartSummary,mChartExpense;
-    TextView Add_Keyword,update_default_keyword;
+    TextView Add_Keyword,update_default_keyword,btn_reset;
     MyAccountsDatabase mSqlHelper;
     AnalysisSummary summary;
-    AppCompatImageButton lnk_refresh;
-    AppCompatButton btn_reset;
+    AppCompatImageButton lnk_refresh,lnk_clear;
+    //AppCompatButton btn_reset;
     AppCompatEditText from_date,to_date;
     TransactionFilter filter;
 
@@ -76,9 +76,10 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
         mChartSummary = (BarChart) view.findViewById(R.id.chart_summary);
         mChartExpense=(BarChart) view.findViewById(R.id.mChartExpense);
         lnk_refresh=(AppCompatImageButton) view.findViewById(R.id.lnk_refresh);
+        lnk_clear=(AppCompatImageButton) view.findViewById(R.id.lnk_clear);
         from_date=(AppCompatEditText) view.findViewById(R.id.from_date);
         to_date=(AppCompatEditText) view.findViewById(R.id.to_date);
-        btn_reset=(AppCompatButton) view.findViewById(R.id.btn_reset);
+        btn_reset= view.findViewById(R.id.btn_reset);
         Add_Keyword=(TextView)view.findViewById(R.id.Add_Keyword);
         update_default_keyword=(TextView)view.findViewById(R.id.update_default_keyword);
         mChartSummary.setOnChartValueSelectedListener(this);
@@ -131,6 +132,14 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
                         showAlertWithCancel("To date should be greater than the From date");
                     }
                 }
+                DrawSummaryChart();
+            }
+        });
+        lnk_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                from_date.setText(null);
+                to_date.setText(null);
                 DrawSummaryChart();
             }
         });
@@ -405,16 +414,7 @@ public class AnalysisStatistics extends Fragment implements OnChartValueSelected
         mChartExpense.setData(data);
         mChartExpense.setFitBars(true); // make the x-axis fit exactly all bars
         mChartExpense.invalidate();
-        // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
-        // "def", "ghj", "ikl", "mno" });
-        // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
-        // "def", "ghj", "ikl", "mno" });
 
-//        XYMarkerView mv = new XYMarkerView(this, xAxisFormatter);
-//        mv.setChartView(mChart); // For bounds control
-//        mChart.setMarker(mv); // Set the marker to the chart
-//
-//        setData(12, 50);
     }
 
     protected RectF mOnValueSelectedRectF = new RectF();
