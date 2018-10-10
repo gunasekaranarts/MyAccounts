@@ -34,13 +34,17 @@
             android:icon="@drawable/ic_menu_analysis"
             android:title="Analysis Data" />
         <item
+            android:id="@+id/nav_pwd_mgr"
+            android:icon="@drawable/ic_menu_pin"
+            android:title="Password Manager" />
+        <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_menu_profile"
             android:title="Profile" />
         <item
             android:id="@+id/nav_pwd"
             android:icon="@drawable/ic_menu_pin"
-            android:title="Change Pin" />
+            android:title="Change App Pin" />
         <item
             android:id="@+id/nav_backup"
             android:icon="@drawable/ic_menu_backup"
