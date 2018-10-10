@@ -54,10 +54,11 @@
         3. We are using your google drive account so your transaction details are safe. \n
         4. Only you can access details via this app. \n
         5. Please do regular backup inorder to keep your transactions safety. \n
+        6. In Password Manager your usernames and passwords are encrypted and saved in database so nobody can view it. \n
     </string>
     <string name="Title">My Accounts App</string>
     <string name="app">App Name \t: \tMy Accounts</string>
-    <string name="version">Version\t   :   \t2.0</string>
+    <string name="version">Version\t   :   \t3.0</string>
     <string name="app_desc">This app used to maintain your day to day transactions</string>
     <string name="developer">Developed by Guna</string>
     <string name="developer_email">gunasekaran.arts@gmail.com</string>
@@ -78,4 +79,8 @@
     <string name="lbl_transaction_summary">Transaction wise Summary</string>
     <string name="lbl_tot_credit">Total Credits/மொத்த வரவு :</string>
     <string name="lbl_tot_debit">Total Debits/மொத்த செலவு :</string>
+    <string name="txt_acc_name">Account</string>
+    <string name="txt_acc_user_name">User Name</string>
+    <string name="txt_acc_password">Password</string>
+    <string name="lbl_pwd_mgr">Password Manager</string>
 </resources>

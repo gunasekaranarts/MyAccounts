@@ -14,6 +14,7 @@ import POJO.AnalysisSummary;
 import POJO.CustomerTransaction;
 import POJO.CustomerTransactionGroup;
 import POJO.Customers;
+import POJO.PasswordManager;
 import POJO.Persons;
 import POJO.SecurityProfile;
 import POJO.Transaction;
@@ -21,6 +22,7 @@ import POJO.TransactionFilter;
 import POJO.TransactionType;
 import TableData.CustomerTransactionTableData;
 import TableData.CustomersTableData;
+import TableData.PasswordManagerTableData;
 import TableData.PersonsTableData;
 import TableData.SecurityTableData;
 import TableData.TableDesign;
@@ -33,7 +35,7 @@ import Utils.GMailSender;
  */
 
 public class MyAccountsDatabase extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "MyAccountsDatabase.db";
     public String Body="";
     public String Subject="";
@@ -64,6 +66,10 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
             CustomerTransactionTableData.TransactionType + TableDesign.INTEGER + CustomerTransactionTableData.TransactionDesc + TableDesign.TEXT + CustomerTransactionTableData.CustomerID+ TableDesign.INTEGER+
             CustomerTransactionTableData.TransactionAmt+TableDesign.INTEGER+
             CustomerTransactionTableData.TransactionDate+" TEXT);";
+    String CreatePasswordManagerQuery="Create Table "+ PasswordManagerTableData.PasswordManagerTableName+" ("+PasswordManagerTableData.AccountId+TableDesign.ID_AUTOINCREMENT+
+            PasswordManagerTableData.AccountName+TableDesign.TEXT+
+            PasswordManagerTableData.UserName+TableDesign.TEXT+
+            PasswordManagerTableData.Password+" TEXT);";
 
     public MyAccountsDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -79,6 +85,7 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         db.execSQL(CreateTransactionsQurey);
         db.execSQL(CreateCustomerQurey);
         db.execSQL(CreateCustTransactionsQurey);
+        db.execSQL(CreatePasswordManagerQuery);
 
         ContentValues contentValues=new ContentValues();
         contentValues.put(TransactionTypeTableData.TransactionTypeName,"Income");
@@ -147,6 +154,9 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
                 db.execSQL("Alter table "+CustomerTransactionTableData.CustomerTransactionTableName+ " ADD COLUMN "+ CustomerTransactionTableData.AccountStatus +" TEXT");
                 db.execSQL("Alter table "+CustomerTransactionTableData.CustomerTransactionTableName+ " ADD COLUMN "+ CustomerTransactionTableData.Message +" TEXT");
                 db.execSQL("Update "+CustomerTransactionTableData.CustomerTransactionTableName+ " set "+CustomerTransactionTableData.AccountStatus+"='Active'" );
+            }
+            if(oldVersion<10){
+                db.execSQL(CreatePasswordManagerQuery);
             }
         }
 
@@ -339,6 +349,46 @@ public class MyAccountsDatabase extends SQLiteOpenHelper {
         }
         dataBase.close();
         return transactions;
+    }
+
+    public void insertPwdMgr(PasswordManager pwdmgr){
+        SQLiteDatabase dataBase = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(PasswordManagerTableData.AccountName, pwdmgr.getAccountName());
+        values.put(PasswordManagerTableData.UserName, pwdmgr.getUserName());
+        values.put(PasswordManagerTableData.Password, pwdmgr.getPassword());
+        dataBase.beginTransaction();
+        long s;
+        if(pwdmgr.getAccountId()==0)
+          s=  dataBase.insertOrThrow(PasswordManagerTableData.PasswordManagerTableName, null, values);
+        else{
+          s=  dataBase.update(PasswordManagerTableData.PasswordManagerTableName,values,
+                    PasswordManagerTableData.AccountId+"=?",new String[] {String.valueOf(pwdmgr.getAccountId())});
+        }
+        dataBase.setTransactionSuccessful();
+        dataBase.endTransaction();
+        dataBase.close();
+    }
+
+    public ArrayList<PasswordManager> getPasswords(){
+        ArrayList<PasswordManager> passwords=new ArrayList<>();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query="select * from "+PasswordManagerTableData.PasswordManagerTableName;
+        Cursor cursor=sqLiteDatabase.rawQuery(query,null);
+        if(cursor.moveToFirst()){
+            do{
+                PasswordManager passwordManager=new PasswordManager();
+                passwordManager.setAccountId(cursor.getInt(cursor.getColumnIndex(PasswordManagerTableData.AccountId)));
+                passwordManager.setAccountName(cursor.getString(cursor.getColumnIndex(PasswordManagerTableData.AccountName)));
+                passwordManager.setUserName(cursor.getString(cursor.getColumnIndex(PasswordManagerTableData.UserName)));
+                passwordManager.setPassword(cursor.getString(cursor.getColumnIndex(PasswordManagerTableData.Password)));
+                passwords.add(passwordManager);
+            }while (cursor.moveToNext());
+            cursor.close();
+        }
+        sqLiteDatabase.close();
+        return passwords;
     }
 
     public ArrayList<CustomerTransactionGroup> getCustomersGroupTransaction(){

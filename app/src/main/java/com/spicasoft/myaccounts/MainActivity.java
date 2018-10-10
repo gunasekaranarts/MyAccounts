@@ -384,6 +384,11 @@ public class MainActivity extends AppCompatActivity
                 fragment=new Change_Password();
                 fab.hide();
             }
+        }else if (id == R.id.nav_pwd_mgr) {
+            if(!(fragment instanceof PasswordManagement) ){
+                fragment=new PasswordManagement();
+                fab.hide();
+            }
         }else if(id==R.id.nav_about){
             ShowDialogTransDate();
         }
